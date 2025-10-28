@@ -3,48 +3,50 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Browse Books - BookList+</title>
-<link rel="stylesheet" href="style.css">
+<title>Browse Books | BookList+</title>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-<nav class="main-nav">
-  <div class="logo" onclick="location.href='index.html'">BookList+</div>
-  <div class="nav-links">
-    <a href="index.html" class="nav-link">Home</a>
-    <a href="browse.html" class="nav-link">Browse</a>
-    <a href="mylist.html" class="nav-link">My List</a>
-    <a href="#" id="loginBtn" class="nav-link">Login</a>
+<header class="browse-header">
+  <div class="logo">BookList+</div>
+  <div class="search-container">
+    <input type="text" id="browseSearch" placeholder="Search for books...">
   </div>
-  <button id="themeToggle">🌞</button>
-</nav>
+  <button id="themeToggle" title="Toggle theme">🌙</button>
+</header>
 
-<div class="container">
-  <h1>Browse by Genre</h1>
-  <div class="browse-filters" id="genre-filters">
-    <button data-genre="fantasy">Fantasy</button>
-    <button data-genre="science_fiction">Science Fiction</button>
-    <button data-genre="romance">Romance</button>
-    <button data-genre="mystery">Mystery</button>
-    <button data-genre="thriller">Thriller</button>
-    <button data-genre="history">History</button>
-    <button data-genre="biography">Biography</button>
-    <button data-genre="children">Children</button>
-    <button data-genre="horror">Horror</button>
-    <button data-genre="adventure">Adventure</button>
-  </div>
+<main class="browse-main">
+  <div class="filters">
+    <select id="genreFilter">
+      <option value="">All Genres</option>
+      <option value="fantasy">Fantasy</option>
+      <option value="science_fiction">Science Fiction</option>
+      <option value="romance">Romance</option>
+      <option value="mystery">Mystery</option>
+      <option value="thriller">Thriller</option>
+    </select>
 
-  <div class="sort-filters">
-    <button data-sort="asc">Title Asc</button>
-    <button data-sort="desc">Title Desc</button>
-    <button data-sort="trending">Trending</button>
-    <button data-sort="popular">Popular</button>
-    <button data-sort="top">Top Rated</button>
-    <button data-sort="all">All</button>
+    <select id="yearFilter">
+      <option value="">All Years</option>
+      <option value="2020">2020+</option>
+      <option value="2010">2010–2019</option>
+      <option value="2000">2000–2009</option>
+      <option value="1990">Before 2000</option>
+    </select>
+
+    <select id="sortFilter">
+      <option value="title">Sort by Title</option>
+      <option value="year">Sort by Year</option>
+    </select>
   </div>
 
-  <div class="book-row" id="browse-row"></div>
-</div>
+  <div class="loading" id="browseLoading">
+    <div class="spinner"></div>Loading books...
+  </div>
 
-<script src="script.js"></script>
+  <div class="book-grid" id="browseGrid"></div>
+</main>
+
+<script src="browse.js"></script>
 </body>
 </html>
