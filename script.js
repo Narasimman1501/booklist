@@ -1,73 +1,58 @@
-// Get references to DOM elements
+const searchBtn = document.getElementById('searchBtn');
 const searchInput = document.getElementById('search');
-const bookList = document.getElementById('bookList');
-const loadingIndicator = document.getElementById('loading');
+const listContainer = document.getElementById('bookList');
+const loading = document.getElementById('loading');
 
-// Hide loading indicator when page is ready
-window.addEventListener('DOMContentLoaded', () => {
-  // Simulate a brief loading time to show the loading indicator
-  setTimeout(() => {
-    loadingIndicator.style.display = 'none';
-  }, 500);
-});
-
-// Function to search books using Open Library API
 async function searchBooks() {
   const query = searchInput.value.trim();
-  
-  if (!query) {
-    bookList.innerHTML = 'Please enter a search term';
-    return;
-  }
-  
-  // Show loading message
-  bookList.innerHTML = 'Searching...';
-  
+  if (!query) return alert("Please enter a book title!");
+
+  // Show loading spinner
+  loading.style.display = "flex";
+  listContainer.innerHTML = "";
+
   try {
-    // Fetch data from Open Library API
-    const response = await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=10`);
+    const response = await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(query)}`);
     const data = await response.json();
-    
-    // Clear previous results
-    bookList.innerHTML = '';
-    
-    if (data.docs && data.docs.length > 0) {
-      // Display each book
-      data.docs.forEach(book => {
-        const bookCard = document.createElement('div');
-        bookCard.className = 'book-card';
-        
-        // Get cover image URL
-        const coverId = book.cover_i;
-        const coverUrl = coverId 
-          ? `https://covers.openlibrary.org/b/id/${coverId}-M.jpg` 
-          : 'https://via.placeholder.com/128x192?text=No+Cover';
-        
-        // Create book card HTML
-        bookCard.innerHTML = `
-          <img src="${coverUrl}" alt="${book.title}" />
-          <h3>${book.title}</h3>
-          <p class="author">Author: ${book.author_name ? book.author_name.join(', ') : 'Unknown'}</p>
-          <p class="year">Year: ${book.first_publish_year || 'N/A'}</p>
-        `;
-        
-        bookList.appendChild(bookCard);
-      });
-    } else {
-      bookList.innerHTML = 'No books found. Try a different search.';
+
+    // Hide loading spinner
+    loading.style.display = "none";
+
+    if (!data.docs || data.docs.length === 0) {
+      listContainer.innerHTML = "<p>No results found.</p>";
+      return;
     }
-  } catch (error) {
-    console.error('Error fetching books:', error);
-    bookList.innerHTML = 'Error fetching books. Please try again.';
+
+    listContainer.innerHTML = "";
+
+    data.docs.slice(0, 10).forEach(book => {
+      const title = book.title || "Unknown Title";
+      const author = book.author_name ? book.author_name.join(', ') : "Unknown Author";
+      const year = book.first_publish_year || "N/A";
+      const coverId = book.cover_i;
+      const coverUrl = coverId 
+        ? `https://covers.openlibrary.org/b/id/${coverId}-M.jpg`
+        : "https://via.placeholder.com/128x193?text=No+Cover";
+
+      const div = document.createElement('div');
+      div.className = 'book-card';
+      div.innerHTML = `
+        <img src="${coverUrl}" alt="${title}">
+        <h3>${title}</h3>
+        <p class="author">${author}</p>
+        <p class="year">First published: ${year}</p>
+      `;
+      listContainer.appendChild(div);
+    });
+
+  } catch (err) {
+    console.error(err);
+    loading.style.display = "none";
+    listContainer.innerHTML = "<p>Something went wrong while fetching data.</p>";
   }
 }
 
-// Add event listener for Enter key
+searchBtn.addEventListener('click', searchBooks);
 searchInput.addEventListener('keypress', (e) => {
-  if (e.key === 'Enter') {
-    searchBooks();
-  }
+  if (e.key === 'Enter') searchBooks();
 });
-
-// Optional: Add event listener for search button if you add one later
-// searchButton.addEventListener('click', searchBooks);
