@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Browse Books | BookList+</title>
+<title>Browse | BookList+</title>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -12,7 +12,6 @@
   <div class="search-container">
     <input type="text" id="browseSearch" placeholder="Search for books...">
   </div>
-  <button id="themeToggle" title="Toggle theme">🌙</button>
 </header>
 
 <main class="browse-main">
@@ -24,19 +23,24 @@
       <option value="romance">Romance</option>
       <option value="mystery">Mystery</option>
       <option value="thriller">Thriller</option>
-    </select>
-
-    <select id="yearFilter">
-      <option value="">All Years</option>
-      <option value="2020">2020+</option>
-      <option value="2010">2010–2019</option>
-      <option value="2000">2000–2009</option>
-      <option value="1990">Before 2000</option>
+      <option value="adventure">Adventure</option>
+      <option value="historical_fiction">Historical Fiction</option>
+      <option value="horror">Horror</option>
+      <option value="biography">Biography</option>
+      <option value="young_adult">Young Adult</option>
+      <option value="children">Children</option>
+      <option value="poetry">Poetry</option>
+      <option value="classics">Classics</option>
+      <option value="drama">Drama</option>
     </select>
 
     <select id="sortFilter">
-      <option value="title">Sort by Title</option>
-      <option value="year">Sort by Year</option>
+      <option value="all">Show All</option>
+      <option value="az">Title A–Z</option>
+      <option value="za">Title Z–A</option>
+      <option value="trending">Trending</option>
+      <option value="popular">Popular</option>
+      <option value="top">Top Rated</option>
     </select>
   </div>
 
