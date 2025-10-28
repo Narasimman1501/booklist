@@ -16,7 +16,7 @@ async function searchBooks() {
     const response = await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(query)}`);
     const data = await response.json();
 
-    // Hide loading spinner
+    // Hide spinner only after data loads
     loading.style.display = "none";
 
     if (!data.docs || data.docs.length === 0) {
@@ -61,7 +61,7 @@ searchInput.addEventListener('keypress', (e) => {
   if (e.key === 'Enter') searchBooks();
 });
 
-// Automatically load some books when the page opens
+// Automatically load default books on page load
 window.addEventListener('load', () => {
   const defaultBooks = ["Harry Potter", "The Hobbit", "Pride and Prejudice", "1984", "The Lord of the Rings"];
   const randomBook = defaultBooks[Math.floor(Math.random() * defaultBooks.length)];
