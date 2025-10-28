@@ -1,0 +1,91 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #222;
+  margin: 0;
+  padding: 0;
+  transition: 0.3s;
+}
+
+body.dark {
+  background: #121212;
+  color: #eee;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 40px;
+  background: white;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+body.dark header { background: #1e1e1e; }
+
+nav a {
+  margin: 0 15px;
+  text-decoration: none;
+  color: #667eea;
+  font-weight: 600;
+}
+nav a.active { border-bottom: 2px solid #667eea; }
+body.dark nav a { color: #88c0d0; }
+
+#themeToggle {
+  border: none;
+  background: transparent;
+  font-size: 1.3em;
+  cursor: pointer;
+}
+
+main { padding: 30px 50px; }
+
+.book-row {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding: 15px 0;
+  scroll-behavior: smooth;
+}
+.book-row::-webkit-scrollbar { display: none; }
+
+.book-card {
+  min-width: 180px;
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  overflow: hidden;
+  transition: 0.3s;
+  cursor: pointer;
+}
+body.dark .book-card { background: #2c2c2c; }
+.book-card:hover { transform: scale(1.05); }
+
+.book-card img {
+  width: 100%;
+  height: 270px;
+  object-fit: cover;
+}
+
+.book-card h3 {
+  font-size: 1em;
+  color: #667eea;
+  margin: 10px;
+}
+.book-card p { margin: 0 10px 10px; color: #555; }
+
+.loading { text-align: center; padding: 20px; }
+.spinner {
+  width: 40px; height: 40px;
+  border: 5px solid #ddd; border-top: 5px solid #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 10px;
+}
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 20px;
+}
