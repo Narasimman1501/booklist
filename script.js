@@ -1,48 +1,47 @@
-// DOM elements
+// Get elements
 const searchBtn = document.getElementById('searchBtn');
 const searchInput = document.getElementById('search');
-const listContainer = document.getElementById('bookList');
-const loading = document.getElementById('loading');
+const searchResults = document.getElementById('searchResults');
+const themeToggle = document.getElementById('themeToggle');
 
-// Section containers (for trending, top rated, popular)
-const trendingContainer = document.getElementById('trendingList');
-const topContainer = document.getElementById('topList');
-const popularContainer = document.getElementById('popularList');
+// Section containers and loaders
+const sections = {
+  trending: { row: document.getElementById('trending-row'), loader: document.getElementById('loading-trending') },
+  top: { row: document.getElementById('top-row'), loader: document.getElementById('loading-top') },
+  popular: { row: document.getElementById('popular-row'), loader: document.getElementById('loading-popular') },
+  browse: { row: document.getElementById('browse-row'), loader: document.getElementById('loading-browse') }
+};
 
-const trendingLoading = document.getElementById('trendingLoading');
-const topLoading = document.getElementById('topLoading');
-const popularLoading = document.getElementById('popularLoading');
+// Toggle dark/light theme
+themeToggle.addEventListener('click', () => document.body.classList.toggle('dark'));
 
-// Fetch books safely
+// Helper: fetch books from OpenLibrary
 async function fetchBooks(query, limit = 10) {
-  if (!query) return [];
   try {
     const res = await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=${limit}`);
-    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const data = await res.json();
     return data.docs || [];
   } catch (err) {
-    console.error("Failed to fetch books:", err);
+    console.error(err);
     return [];
   }
 }
 
-// Render books into a container
+// Render books in a horizontal row
 function renderBooks(container, books) {
-  container.innerHTML = "";
-  if (books.length === 0) {
-    container.innerHTML = "<p>No results found.</p>";
+  container.innerHTML = '';
+  if (!books.length) {
+    container.innerHTML = '<p>No books found.</p>';
     return;
   }
-
   books.forEach(book => {
-    const title = book.title || "Unknown Title";
-    const author = book.author_name ? book.author_name.join(', ') : "Unknown Author";
-    const year = book.first_publish_year || "N/A";
+    const title = book.title || 'Unknown Title';
+    const author = book.author_name ? book.author_name.join(', ') : 'Unknown Author';
+    const year = book.first_publish_year || 'N/A';
     const coverId = book.cover_i;
     const coverUrl = coverId
       ? `https://covers.openlibrary.org/b/id/${coverId}-M.jpg`
-      : "https://via.placeholder.com/128x193?text=No+Cover";
+      : 'https://via.placeholder.com/128x193?text=No+Cover';
 
     const div = document.createElement('div');
     div.className = 'book-card';
@@ -56,50 +55,59 @@ function renderBooks(container, books) {
   });
 }
 
-// Main search function
+// Load section (trending, top, popular, browse)
+async function loadSection(sectionKey, query) {
+  const section = sections[sectionKey];
+  if (!section) return;
+
+  section.loader.style.display = 'flex';
+  section.row.innerHTML = '';
+  const books = await fetchBooks(query, 15);
+  renderBooks(section.row, books);
+  section.loader.style.display = 'none';
+}
+
+// Load all sections on page load
+async function loadAllSections() {
+  await loadSection('trending', 'best sellers');
+  await loadSection('top', 'top rated books');
+  await loadSection('popular', 'popular books');
+}
+
+// Search books
 async function searchBooks() {
   const query = searchInput.value.trim();
-  if (!query) return alert("Please enter a book title!");
+  if (!query) return alert('Please enter a book title!');
 
-  // Show loading
-  loading.style.display = "flex";
-  listContainer.innerHTML = "";
+  // Show search loader
+  searchResults.innerHTML = `<div class="loading"><div class="spinner"></div>Loading results...</div>`;
 
-  const books = await fetchBooks(query, 10);
+  const books = await fetchBooks(query, 15);
+  searchResults.innerHTML = `<h2>Search Results for "${query}"</h2>`;
+  const row = document.createElement('div');
+  row.className = 'book-row';
+  searchResults.appendChild(row);
 
-  // Hide spinner
-  loading.style.display = "none";
-
-  renderBooks(listContainer, books);
+  renderBooks(row, books);
 }
 
-// Load a section (trending, top rated, popular)
-async function loadSection(container, spinner, query, limit = 10) {
-  spinner.style.display = "flex";
-  container.innerHTML = "";
-
-  const books = await fetchBooks(query, limit);
-
-  spinner.style.display = "none";
-  renderBooks(container, books);
-}
-
-// Search button click
-searchBtn.addEventListener('click', searchBooks);
-
-// Press Enter to search
-searchInput.addEventListener('keypress', e => {
-  if (e.key === 'Enter') searchBooks();
+// Browse by genre
+document.getElementById('genre-filters').addEventListener('click', e => {
+  if (e.target.tagName === 'BUTTON') {
+    const genre = e.target.dataset.genre;
+    document.querySelectorAll('#genre-filters button').forEach(btn => btn.classList.remove('active'));
+    e.target.classList.add('active');
+    loadSection('browse', genre);
+  }
 });
 
-// Automatically load sections on page load
-window.addEventListener('load', () => {
-  // Load trending, top rated, popular
-  loadSection(trendingContainer, trendingLoading, "bestseller");
-  loadSection(topContainer, topLoading, "classic literature");
-  loadSection(popularContainer, popularLoading, "popular books");
+// Event listeners
+searchBtn.addEventListener('click', searchBooks);
+searchInput.addEventListener('keypress', e => { if (e.key === 'Enter') searchBooks(); });
 
-  // Optionally, preload search with trending
-  searchInput.value = "bestseller";
-  searchBooks();
+// Initialize page
+window.addEventListener('load', () => {
+  loadAllSections();
+  // Optionally load default genre
+  loadSection('browse', 'fantasy');
 });
