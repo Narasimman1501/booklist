@@ -1,0 +1,28 @@
+function createBookCard(book) {
+    const card = document.createElement('div');
+    card.className = 'book-card';
+
+    const img = document.createElement('img');
+    img.src = book.cover_i
+        ? `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`
+        : 'https://placehold.co/180x270?text=No+Cover';
+    img.alt = book.title_suggest || book.title || 'Unknown Title';
+
+    const title = document.createElement('h3');
+    title.textContent = book.title_suggest || book.title || 'Unknown Title';
+
+    const author = document.createElement('p');
+    author.className = 'author';
+    author.textContent = book.author_name ? book.author_name.join(', ') : 'Unknown Author';
+
+    const year = document.createElement('p');
+    year.className = 'year';
+    year.textContent = book.first_publish_year || '';
+
+    card.appendChild(img);
+    card.appendChild(title);
+    card.appendChild(author);
+    card.appendChild(year);
+
+    return card;
+}
