@@ -33,12 +33,17 @@ function createBookCard(book) {
   return card;
 }
 
-// Fetch trending books (example: search for popular subjects)
-async function loadBooks(subject, container) {
+// Fetch books by subject (genre)
+async function loadBooks(subject, container, loaderId) {
+  const loader = document.getElementById(loaderId);
+  loader.style.display = "flex";
+  container.innerHTML = "";
+
   try {
     const res = await fetch(`${API_URL}/subjects/${subject}.json?limit=10`);
     const data = await res.json();
-    container.innerHTML = "";
+    loader.style.display = "none";
+
     data.works.forEach(work => {
       const book = {
         title: work.title || "No Title",
@@ -49,6 +54,60 @@ async function loadBooks(subject, container) {
       container.appendChild(createBookCard(book));
     });
   } catch (err) {
-    container.innerHTML = `<p>Failed to load books.</p>`;
-    console.error(err);
+    console.error("Error loading books:", err);
+    loader.style.display = "none";
+    container.innerHTML = `<p>⚠️ Failed to load books.</p>`;
   }
+}
+
+// Search books
+async function searchBooks() {
+  const query = searchInput.value.trim();
+  if (!query) return alert("Please enter a book title or author to search.");
+
+  const resultsContainer = document.getElementById("searchResults");
+  resultsContainer.innerHTML = `<div class="loading"><div class="spinner"></div>Searching...</div>`;
+
+  try {
+    const res = await fetch(`${API_URL}/search.json?q=${encodeURIComponent(query)}&limit=15`);
+    const data = await res.json();
+
+    resultsContainer.innerHTML = `<h2>🔎 Search Results</h2><div class="book-row" id="search-row"></div>`;
+    const row = document.getElementById("search-row");
+
+    if (data.docs.length === 0) {
+      resultsContainer.innerHTML += `<p>No results found.</p>`;
+      return;
+    }
+
+    data.docs.forEach(doc => {
+      const book = {
+        title: doc.title || "No Title",
+        author: doc.author_name ? doc.author_name[0] : "Unknown Author",
+        cover: doc.cover_i ? `https://covers.openlibrary.org/b/id/${doc.cover_i}-L.jpg` : PLACEHOLDER,
+        year: doc.first_publish_year || ""
+      };
+      row.appendChild(createBookCard(book));
+    });
+  } catch (err) {
+    console.error("Search failed:", err);
+    resultsContainer.innerHTML = `<p>⚠️ Failed to fetch search results.</p>`;
+  }
+}
+
+// Theme toggle
+themeToggle.addEventListener("click", () => {
+  document.body.classList.toggle("dark");
+  themeToggle.textContent = document.body.classList.contains("dark") ? "🌙" : "🌞";
+});
+
+// Event listeners
+searchBtn.addEventListener("click", searchBooks);
+searchInput.addEventListener("keypress", e => {
+  if (e.key === "Enter") searchBooks();
+});
+
+// Load initial book sections
+loadBooks("fantasy", trendingRow, "loading-trending");
+loadBooks("science_fiction", topRow, "loading-top");
+loadBooks("romance", popularRow, "loading-popular");
