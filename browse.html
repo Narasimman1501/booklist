@@ -1,39 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Browse | BookList+</title>
-  <link rel="stylesheet" href="styles.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Browse Books | BookList+</title>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header>
-    <h1>📖 Browse Books</h1>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="browse.html" class="active">Browse</a>
-      <a href="#" id="myListLink">My List</a>
-      <button id="themeToggle">🌞</button>
-    </nav>
-  </header>
+<header class="browse-header">
+  <div class="logo">BookList+</div>
+  <div class="search-container">
+    <input type="text" id="browseSearch" placeholder="Search for books...">
+  </div>
+  <button id="themeToggle" title="Toggle theme">🌙</button>
+</header>
 
-  <main>
-    <div class="browse-controls">
-      <input type="text" id="searchInput" placeholder="Search by title or author..." />
-      <button id="searchBtn">🔍</button>
-    </div>
+<main class="browse-main">
+  <div class="filters">
+    <select id="genreFilter">
+      <option value="">All Genres</option>
+      <option value="fantasy">Fantasy</option>
+      <option value="science_fiction">Science Fiction</option>
+      <option value="romance">Romance</option>
+      <option value="mystery">Mystery</option>
+      <option value="thriller">Thriller</option>
+    </select>
 
-    <div class="browse-filters">
-      <button data-genre="fantasy">Fantasy</button>
-      <button data-genre="romance">Romance</button>
-      <button data-genre="science_fiction">Sci-Fi</button>
-      <button data-genre="mystery">Mystery</button>
-      <button data-genre="thriller">Thriller</button>
-    </div>
+    <select id="yearFilter">
+      <option value="">All Years</option>
+      <option value="2020">2020+</option>
+      <option value="2010">2010–2019</option>
+      <option value="2000">2000–2009</option>
+      <option value="1990">Before 2000</option>
+    </select>
 
-    <div id="browseResults" class="book-grid"></div>
-  </main>
+    <select id="sortFilter">
+      <option value="title">Sort by Title</option>
+      <option value="year">Sort by Year</option>
+    </select>
+  </div>
 
-  <script src="script.js"></script>
+  <div class="loading" id="browseLoading">
+    <div class="spinner"></div>Loading books...
+  </div>
+
+  <div class="book-grid" id="browseGrid"></div>
+</main>
+
+<script src="browse.js"></script>
 </body>
 </html>
