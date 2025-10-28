@@ -3,6 +3,7 @@ const searchInput = document.getElementById('search');
 const listContainer = document.getElementById('bookList');
 const loading = document.getElementById('loading');
 
+// Fetch and display books
 async function searchBooks() {
   const query = searchInput.value.trim();
   if (!query) return alert("Please enter a book title!");
@@ -30,7 +31,7 @@ async function searchBooks() {
       const author = book.author_name ? book.author_name.join(', ') : "Unknown Author";
       const year = book.first_publish_year || "N/A";
       const coverId = book.cover_i;
-      const coverUrl = coverId 
+      const coverUrl = coverId
         ? `https://covers.openlibrary.org/b/id/${coverId}-M.jpg`
         : "https://via.placeholder.com/128x193?text=No+Cover";
 
@@ -52,7 +53,18 @@ async function searchBooks() {
   }
 }
 
+// Search button click
 searchBtn.addEventListener('click', searchBooks);
+
+// Press Enter to search
 searchInput.addEventListener('keypress', (e) => {
   if (e.key === 'Enter') searchBooks();
+});
+
+// Automatically load some books when the page opens
+window.addEventListener('load', () => {
+  const defaultBooks = ["Harry Potter", "The Hobbit", "Pride and Prejudice", "1984", "The Lord of the Rings"];
+  const randomBook = defaultBooks[Math.floor(Math.random() * defaultBooks.length)];
+  searchInput.value = randomBook;
+  searchBooks();
 });
