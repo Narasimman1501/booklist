@@ -1,20 +1,22 @@
 const searchBtn = document.getElementById('searchBtn');
 const searchInput = document.getElementById('search');
-const listContainer = document.getElementById('bookList');
-const loading = document.getElementById('loading');
+const searchResults = document.getElementById('searchResults');
+const themeToggle = document.getElementById('themeToggle');
 
-// Show loading spinner
-function showLoading() {
-  loading.classList.add('show');
-  listContainer.innerHTML = "";
-}
+const trendingRow = document.getElementById('trending-row');
+const topRow = document.getElementById('top-row');
+const popularRow = document.getElementById('popular-row');
+const browseRow = document.getElementById('browse-row');
 
-// Hide loading spinner
-function hideLoading() {
-  loading.classList.remove('show');
-}
+const loadingTrending = document.getElementById('loading-trending');
+const loadingTop = document.getElementById('loading-top');
+const loadingPopular = document.getElementById('loading-popular');
+const loadingBrowse = document.getElementById('loading-browse');
 
-// Create book card
+// Theme toggle
+themeToggle.addEventListener('click', () => document.body.classList.toggle('dark'));
+
+// Helper: create book card
 function createBookCard(book) {
   const title = book.title || "Unknown Title";
   const author = book.author_name ? book.author_name.join(', ') : "Unknown Author";
@@ -30,61 +32,55 @@ function createBookCard(book) {
     <img src="${coverUrl}" alt="${title}">
     <h3>${title}</h3>
     <p class="author">${author}</p>
-    <p class="year">First published: ${year}</p>
+    <p class="year">${year}</p>
   `;
-  listContainer.appendChild(div);
+  return div;
 }
+
+// Fetch books for multiple titles
+async function fetchBooks(titles, rowEl, loadingEl) {
+  loadingEl.style.display = 'flex';
+  rowEl.innerHTML = '';
+  for (let title of titles) {
+    try {
+      const res = await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(title)}`);
+      const data = await res.json();
+      if (data.docs && data.docs.length > 0) {
+        data.docs.slice(0, 3).forEach(book => rowEl.appendChild(createBookCard(book)));
+      }
+    } catch (err) { console.error(err); }
+  }
+  loadingEl.style.display = 'none';
+}
+
+// Load all sections
+function loadAllSections() {
+  fetchBooks(["Harry Potter", "The Hobbit", "To Kill a Mockingbird"], trendingRow, loadingTrending);
+  fetchBooks(["Pride and Prejudice", "The Great Gatsby", "1984"], topRow, loadingTop);
+  fetchBooks(["The Lord of the Rings", "Moby Dick", "Little Women"], popularRow, loadingPopular);
+}
+loadAllSections();
 
 // Search books
 async function searchBooks() {
   const query = searchInput.value.trim();
-  if (!query) return alert("Please enter a book title!");
+  if (!query) return alert("Please enter a search term.");
 
-  showLoading();
+  searchResults.innerHTML = `<h2>Search Results for "${query}"</h2><div class="loading"><div class="spinner"></div>Loading...</div>`;
+  const resultsRow = document.createElement('div');
+  resultsRow.className = 'book-row';
+  searchResults.appendChild(resultsRow);
 
   try {
-    const response = await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(query)}`);
-    const data = await response.json();
-
-    hideLoading();
-
-    if (!data.docs || data.docs.length === 0) {
-      listContainer.innerHTML = "<p>No results found.</p>";
-      return;
+    const res = await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(query)}`);
+    const data = await res.json();
+    searchResults.querySelector('.loading').style.display = 'none';
+    if (data.docs && data.docs.length > 0) {
+      data.docs.slice(0, 10).forEach(book => resultsRow.appendChild(createBookCard(book)));
+    } else {
+      resultsRow.innerHTML = "<p>No results found.</p>";
     }
-
-    data.docs.slice(0, 10).forEach(book => createBookCard(book));
-
   } catch (err) {
     console.error(err);
-    hideLoading();
-    listContainer.innerHTML = "<p>Something went wrong while fetching data.</p>";
-  }
-}
-
-// Search button click
-searchBtn.addEventListener('click', searchBooks);
-searchInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') searchBooks(); });
-
-// Load trending / popular / top-rated books on page load
-async function loadTrendingBooks() {
-  const trending = ["Harry Potter", "The Hobbit", "To Kill a Mockingbird", "1984", "The Lord of the Rings"];
-  showLoading();
-
-  for (let title of trending) {
-    try {
-      const response = await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(title)}`);
-      const data = await response.json();
-      if (data.docs && data.docs.length > 0) {
-        data.docs.slice(0, 2).forEach(book => createBookCard(book)); // 2 books per trending title
-      }
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
-  hideLoading();
-}
-
-// Run on page load
-window.addEventListener('load', loadTrendingBooks);
+    searchResults.querySelector('.loading').style.display = 'none';
+    resultsRow.innerHTML
