@@ -25,10 +25,10 @@ function createBookCard(book) {
     img.src = book.cover_i
         ? `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`
         : 'https://placehold.co/180x270?text=No+Cover';
-    img.alt = book.title;
+    img.alt = book.title_suggest || book.title || 'Unknown Title';
 
     const title = document.createElement('h3');
-    title.textContent = book.title;
+    title.textContent = book.title_suggest || book.title || 'Unknown Title';
 
     const author = document.createElement('p');
     author.className = 'author';
@@ -107,14 +107,6 @@ searchInput.addEventListener('keypress', e => {
 
 // Theme toggle
 function updateTheme() {
-    const isDark = document.body.classList.contains('dark');
-    themeToggle.textContent = isDark ? '🌞' : '🌙';
-}
 
-themeToggle.addEventListener('click', () => {
-    document.body.classList.toggle('dark');
-    updateTheme();
-});
-
-// Set initial theme icon
-updateTheme();
+::contentReference[oaicite:12]{index=12}
+ 
