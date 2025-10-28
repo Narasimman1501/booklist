@@ -1,18 +1,27 @@
 // Get references to DOM elements
 const searchInput = document.getElementById('search');
 const bookList = document.getElementById('bookList');
+const loadingIndicator = document.getElementById('loading');
+
+// Hide loading indicator when page is ready
+window.addEventListener('DOMContentLoaded', () => {
+  // Simulate a brief loading time to show the loading indicator
+  setTimeout(() => {
+    loadingIndicator.style.display = 'none';
+  }, 500);
+});
 
 // Function to search books using Open Library API
 async function searchBooks() {
   const query = searchInput.value.trim();
   
   if (!query) {
-    bookList.innerHTML = '<p>Please enter a search term</p>';
+    bookList.innerHTML = 'Please enter a search term';
     return;
   }
   
   // Show loading message
-  bookList.innerHTML = '<p>Searching...</p>';
+  bookList.innerHTML = 'Searching...';
   
   try {
     // Fetch data from Open Library API
@@ -36,7 +45,7 @@ async function searchBooks() {
         
         // Create book card HTML
         bookCard.innerHTML = `
-          <img src="${coverUrl}" alt="${book.title}">
+          <img src="${coverUrl}" alt="${book.title}" />
           <h3>${book.title}</h3>
           <p class="author">Author: ${book.author_name ? book.author_name.join(', ') : 'Unknown'}</p>
           <p class="year">Year: ${book.first_publish_year || 'N/A'}</p>
@@ -45,11 +54,11 @@ async function searchBooks() {
         bookList.appendChild(bookCard);
       });
     } else {
-      bookList.innerHTML = '<p>No books found. Try a different search.</p>';
+      bookList.innerHTML = 'No books found. Try a different search.';
     }
   } catch (error) {
     console.error('Error fetching books:', error);
-    bookList.innerHTML = '<p>Error fetching books. Please try again.</p>';
+    bookList.innerHTML = 'Error fetching books. Please try again.';
   }
 }
 
