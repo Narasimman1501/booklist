@@ -1,101 +1,115 @@
 // script.js
 
-// DOM Elements
-const trendingRow = document.getElementById('trending-row');
-const topRow = document.getElementById('top-row');
-const popularRow = document.getElementById('popular-row');
-const searchResults = document.getElementById('searchResults');
-const themeToggle = document.getElementById('themeToggle');
-const searchBtn = document.getElementById('searchBtn');
-const searchInput = document.getElementById('search');
+// Local placeholder path for missing covers
+const PLACEHOLDER = "placeholder.jpg"; // create this file locally in the same folder
 
-// Placeholder image
-const PLACEHOLDER = 'https://via.placeholder.com/180x270?text=No+Cover';
+// Elements
+const trendingRow = document.getElementById("trending-row");
+const topRow = document.getElementById("top-row");
+const popularRow = document.getElementById("popular-row");
+const searchResults = document.getElementById("searchResults");
+const searchInput = document.getElementById("search");
+const searchBtn = document.getElementById("searchBtn");
+const themeToggle = document.getElementById("themeToggle");
 
-// Mock data for demonstration
-const trendingBooks = [
-  { title: "The Great Gatsby", author: "F. Scott Fitzgerald", year: 1925, cover: "" },
-  { title: "1984", author: "George Orwell", year: 1949, cover: "" },
-  { title: "To Kill a Mockingbird", author: "Harper Lee", year: 1960, cover: "" }
-];
+// Theme toggle
+themeToggle.textContent = "🌞";
+themeToggle.addEventListener("click", () => {
+  document.body.classList.toggle("dark");
+  themeToggle.textContent = document.body.classList.contains("dark") ? "🌙" : "🌞";
+});
 
-const topRatedBooks = [
-  { title: "Pride and Prejudice", author: "Jane Austen", year: 1813, cover: "" },
-  { title: "Moby-Dick", author: "Herman Melville", year: 1851, cover: "" }
-];
-
-const popularBooks = [
-  { title: "Harry Potter and the Sorcerer's Stone", author: "J.K. Rowling", year: 1997, cover: "" },
-  { title: "The Hobbit", author: "J.R.R. Tolkien", year: 1937, cover: "" }
-];
-
-// Helper: create a book card
+// Create book card
 function createBookCard(book) {
-  const card = document.createElement('div');
-  card.className = 'book-card';
+  const card = document.createElement("div");
+  card.className = "book-card";
 
-  const img = document.createElement('img');
-  img.src = book.cover || PLACEHOLDER;
+  const img = document.createElement("img");
+  if (book.cover_i) {
+    img.src = `https://covers.openlibrary.org/b/id/${book.cover_i}-L.jpg`;
+  } else {
+    img.src = PLACEHOLDER;
+  }
   img.alt = book.title;
-  img.width = 180;
-  img.height = 270;
+
+  const title = document.createElement("h3");
+  title.textContent = book.title || "Unknown Title";
+
+  const author = document.createElement("p");
+  author.className = "author";
+  author.textContent = book.author_name ? book.author_name.join(", ") : "Unknown Author";
+
+  const year = document.createElement("p");
+  year.className = "year";
+  year.textContent = book.first_publish_year || "";
+
   card.appendChild(img);
-
-  const title = document.createElement('h3');
-  title.textContent = book.title;
   card.appendChild(title);
-
-  const author = document.createElement('p');
-  author.className = 'author';
-  author.textContent = book.author;
   card.appendChild(author);
-
-  const year = document.createElement('p');
-  year.className = 'year';
-  year.textContent = book.year;
   card.appendChild(year);
 
   return card;
 }
 
-// Render books into a row
-function renderBooks(row, books) {
-  row.innerHTML = '';
-  books.forEach(book => {
-    row.appendChild(createBookCard(book));
-  });
+// Fetch books from Open Library
+async function fetchBooks(url, container, limit = 10) {
+  container.innerHTML = "<div class='spinner'></div>";
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    let books = [];
+    if (data.docs) {
+      books = data.docs.slice(0, limit);
+    } else if (data.works) {
+      books = data.works.slice(0, limit);
+    }
+    container.innerHTML = "";
+    books.forEach(book => container.appendChild(createBookCard(book)));
+  } catch (err) {
+    console.error(err);
+    container.innerHTML = "<p>Failed to load books</p>";
+  }
 }
 
-// Initial load
-renderBooks(trendingRow, trendingBooks);
-renderBooks(topRow, topRatedBooks);
-renderBooks(popularRow, popularBooks);
+// Load sections
+function loadSections() {
+  // Trending: let's use subject "fantasy" for example
+  fetchBooks("https://openlibrary.org/subjects/fantasy.json?limit=10", trendingRow);
 
-// Search functionality
-searchBtn.addEventListener('click', () => {
-  const query = searchInput.value.toLowerCase().trim();
+  // Top rated: let's use subject "science_fiction"
+  fetchBooks("https://openlibrary.org/subjects/science_fiction.json?limit=10", topRow);
+
+  // Popular: let's use subject "romance"
+  fetchBooks("https://openlibrary.org/subjects/romance.json?limit=10", popularRow);
+}
+
+// Search function
+async function searchBooks() {
+  const query = searchInput.value.trim();
   if (!query) return;
-  const allBooks = [...trendingBooks, ...topRatedBooks, ...popularBooks];
-  const results = allBooks.filter(book =>
-    book.title.toLowerCase().includes(query) ||
-    book.author.toLowerCase().includes(query)
-  );
-  searchResults.innerHTML = '<h2>Search Results</h2>';
-  if (results.length === 0) {
-    searchResults.innerHTML += '<p>No books found.</p>';
-  } else {
-    const row = document.createElement('div');
-    row.className = 'book-row';
-    renderBooks(row, results);
+  searchResults.innerHTML = "<div class='spinner'></div>";
+  const url = `https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=20`;
+  try {
+    const res = await fetch(url);
+    const data = await res.json();
+    searchResults.innerHTML = `<h2>Search Results for "${query}"</h2>`;
+    const row = document.createElement("div");
+    row.className = "book-row";
+    if (data.docs.length === 0) {
+      row.innerHTML = "<p>No books found</p>";
+    } else {
+      data.docs.forEach(book => row.appendChild(createBookCard(book)));
+    }
     searchResults.appendChild(row);
+  } catch (err) {
+    console.error(err);
+    searchResults.innerHTML = "<p>Failed to search books</p>";
   }
-});
+}
 
-// Theme toggle
-let darkMode = false;
-themeToggle.textContent = '🌙';
-themeToggle.addEventListener('click', () => {
-  darkMode = !darkMode;
-  document.body.classList.toggle('dark', darkMode);
-  themeToggle.textContent = darkMode ? '🌞' : '🌙';
-});
+// Event listeners
+searchBtn.addEventListener("click", searchBooks);
+searchInput.addEventListener("keypress", e => { if (e.key === "Enter") searchBooks(); });
+
+// Initialize
+loadSections();
