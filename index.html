@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>BookList - Discover Books</title>
 <link rel="icon" href="data:,">
 <style>
@@ -19,197 +19,59 @@
     background: #121212;
     color: #eee;
   }
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    background: white;
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-    transition: background 0.3s, color 0.3s;
-  }
-  body.dark .container {
-    background: #1e1e1e;
-    color: #eee;
-  }
-  h1 {
-    text-align: center;
-    color: #667eea;
-    margin-bottom: 10px;
-    font-size: 2.5em;
-  }
-  .subtitle {
-    text-align: center;
-    color: #666;
-    margin-bottom: 30px;
-    font-size: 1.1em;
-  }
-  body.dark .subtitle {
-    color: #ccc;
-  }
-  .search-bar {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 30px;
-    gap: 10px;
-  }
-  #search {
-    flex-grow: 1;
-    padding: 15px 20px;
-    font-size: 16px;
-    border: 2px solid #667eea;
-    border-radius: 30px;
-    outline: none;
-    transition: border-color 0.3s, background 0.3s, color 0.3s;
-  }
-  body.dark #search {
-    background: #2c2c2c;
-    color: #eee;
-    border-color: #888;
-  }
-  #search:focus {
-    border-color: #764ba2;
-  }
-  #searchBtn, #themeToggle {
-    padding: 15px 25px;
-    font-size: 16px;
-    border: none;
-    border-radius: 30px;
-    background-color: #667eea;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    user-select: none;
-  }
-  #searchBtn:hover, #themeToggle:hover {
-    background-color: #764ba2;
-  }
+  .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 20px; padding: 30px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); transition: background 0.3s, color 0.3s; }
+  body.dark .container { background: #1e1e1e; color: #eee; }
+  h1 { text-align: center; color: #667eea; margin-bottom: 10px; font-size: 2.5em; }
+  .subtitle { text-align: center; color: #666; margin-bottom: 30px; font-size: 1.1em; }
+  body.dark .subtitle { color: #ccc; }
+  .search-bar { display: flex; align-items: center; justify-content: center; margin-bottom: 30px; flex-wrap: wrap; gap: 10px; }
+  #search { flex: 1; min-width: 250px; padding: 15px 20px; font-size: 16px; border: 2px solid #667eea; border-radius: 30px; outline: none; transition: border-color 0.3s, background 0.3s, color 0.3s; }
+  body.dark #search { background: #2c2c2c; color: #eee; border-color: #888; }
+  #search:focus { border-color: #764ba2; }
+  #searchBtn, #themeToggle { padding: 15px 25px; font-size: 16px; border: none; border-radius: 30px; background-color: #667eea; color: white; cursor: pointer; transition: background-color 0.3s; }
+  #searchBtn:hover, #themeToggle:hover { background-color: #764ba2; }
 
   /* Horizontal scroll sections */
-  .section {
-    margin-bottom: 40px;
-  }
-  .section h2 {
-    color: #764ba2;
-    margin-bottom: 15px;
-  }
-  body.dark .section h2 {
-    color: #eee;
-  }
-  .book-row {
-    display: flex;
-    overflow-x: auto;
-    gap: 15px;
-    padding-bottom: 10px;
-  }
+  .section { margin-bottom: 40px; }
+  .section h2 { color: #764ba2; margin-bottom: 15px; }
+  body.dark .section h2 { color: #eee; }
+  .book-row { display: flex; overflow-x: auto; gap: 15px; padding-bottom: 10px; }
   .book-card {
     min-width: 180px;
+    max-width: 180px;
     background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
     border-radius: 15px;
     padding: 10px;
     transition: transform 0.3s, box-shadow 0.3s, background 0.3s, color 0.3s;
     cursor: pointer;
     flex-shrink: 0;
+    text-align: center;
   }
-  body.dark .book-card {
-    background: #2c2c2c;
-    color: #eee;
-  }
-  .book-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-  }
-  /* Uniform book cover aspect ratio 2:3 */
-  .book-card img {
-    width: 100%;
-    aspect-ratio: 2 / 3;
-    object-fit: cover;
-    border-radius: 10px;
-    margin-bottom: 10px;
-    background: #ddd;
-  }
-  .book-card h3 {
-    color: #667eea;
-    font-size: 1em;
-    margin-bottom: 5px;
-  }
-  body.dark .book-card h3 {
-    color: #81a1c1;
-  }
-  .book-card p {
-    color: #555;
-    font-size: 0.9em;
-    line-height: 1.3;
-  }
-  body.dark .book-card p {
-    color: #ccc;
-  }
-  .book-card .author {
-    font-style: italic;
-    color: #764ba2;
-  }
-  body.dark .book-card .author {
-    color: #88c0d0;
-  }
-  .book-card .year {
-    font-size: 0.8em;
-    color: #888;
-  }
-  body.dark .book-card .year {
-    color: #aaa;
-  }
+  body.dark .book-card { background: #2c2c2c; color: #eee; }
+  .book-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+  .book-card img { width: 100%; height: 270px; object-fit: cover; border-radius: 10px; margin-bottom: 10px; }
+  .book-card h3 { color: #667eea; font-size: 1em; margin-bottom: 5px; }
+  body.dark .book-card h3 { color: #81a1c1; }
+  .book-card p { color: #555; font-size: 0.9em; line-height: 1.3; margin: 2px 0; }
+  body.dark .book-card p { color: #ccc; }
+  .book-card .author { font-style: italic; color: #764ba2; }
+  body.dark .book-card .author { color: #88c0d0; }
+  .book-card .year { font-size: 0.8em; color: #888; }
+  body.dark .book-card .year { color: #aaa; }
 
   /* Loading spinner */
-  .loading {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin: 20px 0;
-  }
-  .spinner {
-    width: 40px;
-    height: 40px;
-    border: 5px solid #f3f3f3;
-    border-top: 5px solid #667eea;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-bottom: 10px;
-  }
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
+  .loading { display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 20px 0; }
+  .spinner { width: 40px; height: 40px; border: 5px solid #f3f3f3; border-top: 5px solid #667eea; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 10px; }
+  @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
   /* Hide scrollbar */
-  .book-row::-webkit-scrollbar {
-    display: none;
-  }
-  .book-row {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
+  .book-row::-webkit-scrollbar { display: none; }
+  .book-row { -ms-overflow-style: none; scrollbar-width: none; }
 
   /* Browse filter buttons */
-  .browse-filters {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
-    flex-wrap: wrap;
-  }
-  .browse-filters button {
-    padding: 8px 15px;
-    border: none;
-    border-radius: 20px;
-    cursor: pointer;
-    background: #667eea;
-    color: white;
-    transition: background 0.3s;
-  }
-  .browse-filters button:hover, .browse-filters button.active {
-    background: #764ba2;
-  }
+  .browse-filters { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+  .browse-filters button { padding: 8px 15px; border: none; border-radius: 20px; cursor: pointer; background: #667eea; color: white; transition: background 0.3s; }
+  .browse-filters button:hover, .browse-filters button.active { background: #764ba2; }
 
 </style>
 </head>
@@ -221,7 +83,7 @@
   <div class="search-bar">
     <input type="text" id="search" placeholder="Search for books by title, author, or genre..." />
     <button id="searchBtn">Search</button>
-    <button id="themeToggle" aria-label="Toggle dark/light theme" title="Toggle theme">🌞</button>
+    <button id="themeToggle">🌞</button>
   </div>
 
   <!-- Sections -->
@@ -261,74 +123,6 @@
   <div id="searchResults" class="section"></div>
 </div>
 
-<script>
-  // Theme toggle logic
-  const themeToggleBtn = document.getElementById('themeToggle');
-  const body = document.body;
-
-  // Load saved theme or default to light
-  const savedTheme = localStorage.getItem('theme');
-  if (savedTheme === 'dark') {
-    body.classList.add('dark');
-    themeToggleBtn.textContent = '🌙';
-  } else {
-    themeToggleBtn.textContent = '🌞';
-  }
-
-  themeToggleBtn.addEventListener('click', () => {
-    if (body.classList.contains('dark')) {
-      body.classList.remove('dark');
-      themeToggleBtn.textContent = '🌞';
-      localStorage.setItem('theme', 'light');
-    } else {
-      body.classList.add('dark');
-      themeToggleBtn.textContent = '🌙';
-      localStorage.setItem('theme', 'dark');
-    }
-  });
-
-  // Sample fallback cover image (replace with your own or a data URL)
-  const fallbackCover = 'https://via.placeholder.com/128x192?text=No+Cover';
-
-  // Example function to create a book card (adjust with your actual data fetching)
-  function createBookCard(book) {
-    const card = document.createElement('div');
-    card.className = 'book-card';
-
-    const img = document.createElement('img');
-    img.src = book.cover || fallbackCover;
-    img.alt = `${book.title} cover`;
-    img.onerror = () => { img.src = fallbackCover; };
-
-    const title = document.createElement('h3');
-    title.textContent = book.title;
-
-    const author = document.createElement('p');
-    author.className = 'author';
-    author.textContent = book.author;
-
-    const year = document.createElement('p');
-    year.className = 'year';
-    year.textContent = book.year;
-
-    card.appendChild(img);
-    card.appendChild(title);
-    card.appendChild(author);
-    card.appendChild(year);
-
-    return card;
-  }
-
-  // Example usage: add sample books to "Trending"
-  const trendingRow = document.getElementById('trending-row');
-  const sampleBooks = [
-    { title: 'Emma', author: 'Jane Austen', year: '1815', cover: 'https://covers.openlibrary.org/b/id/8226191-L.jpg' },
-    { title: 'The Five-Star Review', author: 'Cat Ellington', year: '2021', cover: 'https://covers.openlibrary.org/b/id/10523310-L.jpg' },
-    { title: 'Modern Weapons', author: 'Amber Books', year: '2012', cover: 'https://covers.openlibrary.org/b/id/8391182-L.jpg' }
-  ];
-  sampleBooks.forEach(book => trendingRow.appendChild(createBookCard(book)));
-
-  // Similar code can be added to populate other sections...
-</script>
+<script src="script.js"></script>
 </body>
 </html>
