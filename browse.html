@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Browse | BookList+</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <h1>📖 Browse Books</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="browse.html" class="active">Browse</a>
+      <a href="#" id="myListLink">My List</a>
+      <button id="themeToggle">🌞</button>
+    </nav>
+  </header>
+
+  <main>
+    <div class="browse-controls">
+      <input type="text" id="searchInput" placeholder="Search by title or author..." />
+      <button id="searchBtn">🔍</button>
+    </div>
+
+    <div class="browse-filters">
+      <button data-genre="fantasy">Fantasy</button>
+      <button data-genre="romance">Romance</button>
+      <button data-genre="science_fiction">Sci-Fi</button>
+      <button data-genre="mystery">Mystery</button>
+      <button data-genre="thriller">Thriller</button>
+    </div>
+
+    <div id="browseResults" class="book-grid"></div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
