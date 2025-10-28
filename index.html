@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BookList - Discover Your Next Great Read</title>
-  <link rel="icon" href="data:,"> <!-- prevents favicon 404 error -->
+  <link rel="icon" href="data:,"> <!-- prevents favicon 404 -->
   <style>
     * {
       margin: 0;
@@ -38,15 +38,20 @@
       margin-bottom: 30px;
       font-size: 1.1em;
     }
+    .search-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
     #search {
-      width: calc(100% - 120px);
+      width: calc(100% - 140px);
       padding: 15px 20px;
       font-size: 16px;
       border: 2px solid #667eea;
       border-radius: 30px;
       outline: none;
       transition: border-color 0.3s;
-      margin-bottom: 30px;
     }
     #search:focus {
       border-color: #764ba2;
@@ -107,7 +112,7 @@
       font-size: 0.9em;
       color: #888;
     }
-    /* Loading indicator styles */
+    /* Loading styles */
     #loading {
       display: none;
       flex-direction: column;
@@ -115,12 +120,13 @@
       align-items: center;
       min-height: 200px;
       color: #667eea;
+      animation: fadeIn 0.3s ease;
     }
     .spinner {
-      width: 50px;
-      height: 50px;
-      border: 5px solid #f3f3f3;
-      border-top: 5px solid #667eea;
+      width: 60px;
+      height: 60px;
+      border: 6px solid #f3f3f3;
+      border-top: 6px solid #667eea;
       border-radius: 50%;
       animation: spin 1s linear infinite;
       margin-bottom: 15px;
@@ -128,6 +134,10 @@
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
     .loading-text {
       font-size: 1.2em;
@@ -140,7 +150,7 @@
     <h1>📚 BookList</h1>
     <p class="subtitle">Discover your next great read</p>
 
-    <div style="display: flex; align-items: center;">
+    <div class="search-bar">
       <input type="text" id="search" placeholder="Search for books by title, author, or genre..." />
       <button id="searchBtn">Search</button>
     </div>
@@ -148,7 +158,7 @@
     <!-- Loading indicator -->
     <div id="loading">
       <div class="spinner"></div>
-      <div class="loading-text">Loading...</div>
+      <div class="loading-text">Loading books...</div>
     </div>
 
     <div id="bookList"></div>
