@@ -1,72 +1,72 @@
-const themeBtn = document.getElementById('themeToggle');
-themeBtn?.addEventListener('click', () => {
-  document.body.classList.toggle('dark');
-  themeBtn.textContent = document.body.classList.contains('dark') ? '🌙' : '🌞';
-});
+const themeToggle = document.getElementById('themeToggle');
+const trendingList = document.getElementById('trendingList');
+const popularList = document.getElementById('popularList');
+const topRatedList = document.getElementById('topRatedList');
+const searchList = document.getElementById('searchList');
 
-let myList = JSON.parse(localStorage.getItem('myList')) || [];
+const trendingLoading = document.getElementById('trendingLoading');
+const popularLoading = document.getElementById('popularLoading');
+const topRatedLoading = document.getElementById('topRatedLoading');
+const searchLoading = document.getElementById('searchLoading');
 
-async function fetchBooks(subject='bestsellers', limit=10){
+const searchBtn = document.getElementById('searchBtn');
+const searchInput = document.getElementById('search');
+const searchResults = document.getElementById('searchResults');
+
+function toggleTheme() {
+  const current = document.body.dataset.theme;
+  const newTheme = current === 'dark' ? 'light' : 'dark';
+  document.body.dataset.theme = newTheme;
+  localStorage.setItem('theme', newTheme);
+  themeToggle.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+}
+themeToggle.addEventListener('click', toggleTheme);
+
+(function loadTheme() {
+  const saved = localStorage.getItem('theme') || 'light';
+  document.body.dataset.theme = saved;
+  themeToggle.textContent = saved === 'dark' ? '☀️' : '🌙';
+})();
+
+async function fetchBooks(url, listElem, loader) {
+  loader.style.display = 'flex';
+  listElem.innerHTML = '';
   try {
-    const res = await fetch(`https://openlibrary.org/subjects/${subject}.json?limit=${limit}`);
+    const res = await fetch(url);
     const data = await res.json();
-    return data.works || [];
-  } catch(err){
-    console.error(err);
-    return [];
+    loader.style.display = 'none';
+    const books = data.docs || data.works || [];
+    books.slice(0, 15).forEach(b => listElem.appendChild(createBookCard(b)));
+  } catch {
+    loader.style.display = 'none';
+    listElem.innerHTML = '<p>Error loading books.</p>';
   }
 }
 
-function createBookCard(book){
-  const card = document.createElement('div');
-  card.className='book-card';
-  card.innerHTML=`
-    <img src="${book.cover_id ? 'https://covers.openlibrary.org/b/id/' + book.cover_id + '-L.jpg' : 'https://via.placeholder.com/180x270?text=No+Cover'}" alt="${book.title}">
-    <div class="book-info">
-      <h3>${book.title}</h3>
-      <p>${book.authors?.[0]?.name || 'Unknown'}</p>
-      <button class="add-mylist-btn">Add to My List</button>
-    </div>
-  `;
-  // Open Library link
-  card.querySelector('img').addEventListener('click', e=>{
-    e.stopPropagation();
-    window.open('https://openlibrary.org'+book.key,'_blank');
-  });
-  // Add to My List
-  card.querySelector('.add-mylist-btn').addEventListener('click', e=>{
-    e.stopPropagation();
-    if(!myList.find(b=>b.key===book.key)){
-      myList.push({key:book.key,title:book.title,status:'planning'});
-      localStorage.setItem('myList',JSON.stringify(myList));
-      alert(`${book.title} added to My List`);
-    }
-  });
-  return card;
+function loadTrending() {
+  fetchBooks('https://openlibrary.org/trending/weekly.json', trendingList, trendingLoading);
+}
+function loadPopular() {
+  fetchBooks('https://openlibrary.org/search.json?sort=edition_count&limit=15', popularList, popularLoading);
+}
+function loadTopRated() {
+  fetchBooks('https://openlibrary.org/search.json?sort=ratings_count&limit=15', topRatedList, topRatedLoading);
 }
 
-async function renderSection(rowId, subject){
-  const row = document.getElementById(rowId);
-  if(!row) return;
-  row.innerHTML='';
-  const books = await fetchBooks(subject,10);
-  books.forEach(book=>row.appendChild(createBookCard(book)));
+function searchBooks() {
+  const query = searchInput.value.trim();
+  if (!query) return;
+  searchResults.style.display = 'block';
+  fetchBooks(`https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=20`, searchList, searchLoading);
 }
 
-// Home sections
-renderSection('trending-row','bestsellers');
-renderSection('top-row','popular');
-renderSection('popular-row','fiction');
+searchBtn.addEventListener('click', searchBooks);
+searchInput.addEventListener('keypress', e => {
+  if (e.key === 'Enter') searchBooks();
+});
 
-// Browse page
-if(document.getElementById('browse-row')){
-  const genreButtons=document.querySelectorAll('#genre-filters button');
-  genreButtons.forEach(btn=>{
-    btn.addEventListener('click', async ()=>{
-      const row=document.getElementById('browse-row');
-      row.innerHTML='';
-      const books=await fetchBooks(btn.dataset.genre,20);
-      books.forEach(book=>row.appendChild(createBookCard(book)));
-    });
-  });
-}
+window.addEventListener('load', () => {
+  loadTrending();
+  loadPopular();
+  loadTopRated();
+});
