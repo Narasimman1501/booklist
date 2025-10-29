@@ -29,7 +29,7 @@ body {
 
 .book-section h2 {
   margin-left: 10px;
-  color: #e0e0e0;
+  color: #ffffff;
 }
 
 .books-row {
@@ -37,6 +37,7 @@ body {
   gap: 15px;
   overflow-x: auto;
   padding: 10px;
+  scroll-behavior: smooth;
 }
 
 .books-row::-webkit-scrollbar {
@@ -44,7 +45,7 @@ body {
 }
 
 .books-row::-webkit-scrollbar-thumb {
-  background: #888;
+  background: #555;
   border-radius: 3px;
 }
 
