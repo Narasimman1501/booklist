@@ -1,10 +1,10 @@
 const genres = [
-  { name: 'Classic Literature', query: 'classic_literature' },
-  { name: 'Science Fiction', query: 'science_fiction' },
-  { name: 'Fantasy', query: 'fantasy' },
-  { name: 'Mystery', query: 'mystery' },
-  { name: 'Romance', query: 'romance' },
-  { name: 'Historical Fiction', query: 'historical_fiction' },
+  { name: 'Classic Literature', query: 'classic_literature', emoji: '🏰' },
+  { name: 'Science Fiction', query: 'science_fiction', emoji: '🚀' },
+  { name: 'Fantasy', query: 'fantasy', emoji: '🐉' },
+  { name: 'Mystery', query: 'mystery', emoji: '🕵️‍♂️' },
+  { name: 'Romance', query: 'romance', emoji: '❤️' },
+  { name: 'Historical Fiction', query: 'historical_fiction', emoji: '🏺' },
 ];
 
 const genresContainer = document.getElementById('genresContainer');
@@ -13,18 +13,16 @@ const searchResultsSection = document.getElementById('searchResults');
 const searchBooksContainer = document.getElementById('searchBooks');
 
 function createBookCard(book) {
-  // Handle cover URL - fallback to placeholder if no cover_i
-  const coverUrl = book.cover_id
-    ? `https://covers.openlibrary.org/b/id/${book.cover_id}-M.jpg`
-    : (book.cover_i
-      ? `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`
-      : 'https://via.placeholder.com/140x210?text=No+Cover');
+  // OpenLibrary covers come from different fields
+  const coverId = book.cover_id || book.cover_i || (book.cover && book.cover.medium) || null;
+  const coverUrl = coverId
+    ? `https://covers.openlibrary.org/b/id/${coverId}-M.jpg`
+    : 'https://via.placeholder.com/140x210/333/777?text=No+Cover';
 
-  // Authors can be in different fields depending on API endpoint
   let author = 'Unknown Author';
-  if (book.authors && Array.isArray(book.authors) && book.authors.length > 0) {
-    author = book.authors[0].name || author;
-  } else if (book.author_name && Array.isArray(book.author_name) && book.author_name.length > 0) {
+  if (book.authors && book.authors.length > 0 && book.authors[0].name) {
+    author = book.authors[0].name;
+  } else if (book.author_name && book.author_name.length > 0) {
     author = book.author_name[0];
   } else if (book.author) {
     author = book.author;
@@ -34,11 +32,12 @@ function createBookCard(book) {
 
   const card = document.createElement('div');
   card.className = 'book-card';
+  card.title = `${title} by ${author}`;
 
   card.innerHTML = `
     <img class="book-cover" src="${coverUrl}" alt="${title} cover" loading="lazy" />
     <div class="book-info">
-      <div class="book-title" title="${title}">${title}</div>
+      <div class="book-title">${title}</div>
       <div class="book-author">${author}</div>
     </div>
   `;
@@ -46,60 +45,46 @@ function createBookCard(book) {
   return card;
 }
 
-async function fetchBooksBySubject(subject, limit = 10) {
+async function fetchBooksBySubject(subject, limit = 12) {
   try {
-    // Subjects endpoint expects lowercase and underscores (like classic_literature)
-    const response = await fetch(`https://openlibrary.org/subjects/${subject}.json?limit=${limit}`);
-    if (!response.ok) throw new Error(`Network response was not ok: ${response.status}`);
+    const res = await fetch(`https://openlibrary.org/subjects/${subject}.json?limit=${limit}`);
+    if (!res.ok) throw new Error(`Failed to fetch subject ${subject}: ${res.status}`);
 
-    const data = await response.json();
+    const data = await res.json();
     return data.works || [];
-  } catch (error) {
-    console.error(`Failed to fetch books for subject "${subject}":`, error);
+  } catch (err) {
+    console.error(err);
     return [];
   }
 }
 
-async function fetchBooksBySearch(query, limit = 20) {
+async function fetchBooksBySearch(query, limit = 24) {
   try {
-    const response = await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=${limit}`);
-    if (!response.ok) throw new Error(`Network response was not ok: ${response.status}`);
+    const res = await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=${limit}`);
+    if (!res.ok) throw new Error(`Failed to search: ${res.status}`);
 
-    const data = await response.json();
+    const data = await res.json();
     return data.docs || [];
-  } catch (error) {
-    console.error(`Failed to fetch books for search "${query}":`, error);
+  } catch (err) {
+    console.error(err);
     return [];
   }
 }
 
 function clearContainer(container) {
-  while (container.firstChild) {
-    container.removeChild(container.firstChild);
-  }
+  container.innerHTML = '';
 }
 
 async function renderGenres() {
   clearContainer(genresContainer);
+  searchResultsSection.classList.add('hidden');
 
   for (const genre of genres) {
     const section = document.createElement('section');
     section.className = 'book-section';
 
     const heading = document.createElement('h2');
-
-    // Emoji for genres
-    let emoji = '📚';
-    switch (genre.name.toLowerCase()) {
-      case 'classic literature': emoji = '🏰'; break;
-      case 'science fiction': emoji = '🚀'; break;
-      case 'fantasy': emoji = '🐉'; break;
-      case 'mystery': emoji = '🕵️‍♂️'; break;
-      case 'romance': emoji = '❤️'; break;
-      case 'historical fiction': emoji = '🏺'; break;
-    }
-
-    heading.textContent = `${emoji} ${genre.name}`;
+    heading.textContent = `${genre.emoji} ${genre.name}`;
     section.appendChild(heading);
 
     const booksRow = document.createElement('div');
@@ -108,55 +93,52 @@ async function renderGenres() {
 
     genresContainer.appendChild(section);
 
-    const books = await fetchBooksBySubject(genre.query, 10);
-
-    if (books.length === 0) {
-      booksRow.textContent = 'No books found for this genre.';
+    const books = await fetchBooksBySubject(genre.query, 12);
+    if (!books.length) {
+      booksRow.textContent = 'No books found.';
       continue;
     }
 
-    for (const book of books) {
+    books.forEach(book => {
       const card = createBookCard(book);
       booksRow.appendChild(card);
-    }
+    });
   }
 }
 
 async function renderSearchResults(query) {
   if (!query.trim()) {
-    searchResultsSection.style.display = 'none';
+    searchResultsSection.classList.add('hidden');
+    genresContainer.style.display = 'block';
     return;
   }
-  searchResultsSection.style.display = 'block';
+
+  genresContainer.style.display = 'none';
+  searchResultsSection.classList.remove('hidden');
   clearContainer(searchBooksContainer);
 
-  const results = await fetchBooksBySearch(query, 20);
-  if (results.length === 0) {
+  const books = await fetchBooksBySearch(query, 24);
+
+  if (!books.length) {
     searchBooksContainer.textContent = 'No results found.';
     return;
   }
 
-  for (const book of results) {
+  books.forEach(book => {
     const card = createBookCard(book);
     searchBooksContainer.appendChild(card);
-  }
+  });
 }
 
-let searchTimeout;
-searchInput.addEventListener('input', () => {
-  clearTimeout(searchTimeout);
-  const query = searchInput.value.trim();
+let debounceTimeout;
+searchInput.addEventListener('input', e => {
+  clearTimeout(debounceTimeout);
 
-  if (query === '') {
-    searchResultsSection.style.display = 'none';
-    return;
-  }
-
-  // Debounce search by 400ms
-  searchTimeout = setTimeout(() => {
+  const query = e.target.value;
+  debounceTimeout = setTimeout(() => {
     renderSearchResults(query);
   }, 400);
 });
 
-// Initial rendering
+// Initial load
 renderGenres();
