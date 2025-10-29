@@ -1,16 +1,16 @@
 const genres = [
-  { name: 'Classic Literature', query: 'classic_literature', emoji: '🏰' },
-  { name: 'Science Fiction', query: 'science_fiction', emoji: '🚀' },
+  { name: 'Classic Literature', query: 'classic literature', emoji: '🏰' },
+  { name: 'Science Fiction', query: 'science fiction', emoji: '🚀' },
   { name: 'Fantasy', query: 'fantasy', emoji: '🐉' },
   { name: 'Mystery', query: 'mystery', emoji: '🕵️‍♂️' },
   { name: 'Romance', query: 'romance', emoji: '❤️' },
-  { name: 'Historical Fiction', query: 'historical_fiction', emoji: '🏺' },
+  { name: 'Historical Fiction', query: 'historical fiction', emoji: '🏺' },
 ];
 
 const specialRows = [
   { name: 'Trending', endpoint: 'https://openlibrary.org/trending/daily.json', emoji: '📈' },
-  { name: 'Top Rated', query: '*', sort: 'edition_count desc', emoji: '⭐' },
-  { name: 'Popular', query: '*', sort: 'edition_count desc', emoji: '🔥' },
+  { name: 'Top Rated', query: 'the', sort: 'edition_count desc', emoji: '⭐' },
+  { name: 'Popular', query: 'a', sort: 'edition_count desc', emoji: '🔥' },
 ];
 
 const genresContainer = document.getElementById('genresContainer');
@@ -45,6 +45,7 @@ function createBookCard(book) {
   return card;
 }
 
+// Fetch trending books
 async function fetchTrendingBooks(limit = 12) {
   try {
     const res = await fetch(`${specialRows[0].endpoint}?limit=${limit}`);
@@ -57,6 +58,7 @@ async function fetchTrendingBooks(limit = 12) {
   }
 }
 
+// Fetch books by search or genre
 async function fetchBooksBySearch(query, sort = null, limit = 12) {
   try {
     let url = `https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=${limit}&fields=title,author_name,cover_i,edition_count`;
@@ -71,6 +73,7 @@ async function fetchBooksBySearch(query, sort = null, limit = 12) {
   }
 }
 
+// Render Trending, Top Rated, Popular
 async function renderSpecialRows() {
   for (const row of specialRows) {
     const section = document.createElement('section');
@@ -84,14 +87,21 @@ async function renderSpecialRows() {
     genresContainer.parentNode.insertBefore(section, genresContainer);
 
     let books = [];
-    if (row.endpoint) books = await fetchTrendingBooks(12);
-    else books = await fetchBooksBySearch(row.query, row.sort, 12);
+    if (row.endpoint) {
+      books = await fetchTrendingBooks(12);
+    } else {
+      books = await fetchBooksBySearch(row.query, row.sort, 12);
+    }
 
-    if (books.length === 0) booksRow.textContent = 'No books found.';
-    else books.forEach(b => booksRow.appendChild(createBookCard(b)));
+    if (books.length === 0) {
+      booksRow.textContent = 'No books found.';
+    } else {
+      books.forEach(b => booksRow.appendChild(createBookCard(b)));
+    }
   }
 }
 
+// Render Genres
 async function renderGenres() {
   genresContainer.innerHTML = '';
   searchResultsSection.classList.add('hidden');
@@ -109,11 +119,15 @@ async function renderGenres() {
     genresContainer.appendChild(section);
 
     const books = await fetchBooksBySearch(genre.query, null, 12);
-    if (books.length === 0) booksRow.textContent = 'No books found.';
-    else books.forEach(b => booksRow.appendChild(createBookCard(b)));
+    if (books.length === 0) {
+      booksRow.textContent = 'No books found.';
+    } else {
+      books.forEach(b => booksRow.appendChild(createBookCard(b)));
+    }
   }
 }
 
+// Render search results
 async function renderSearchResults(query) {
   if (!query.trim()) {
     searchResultsSection.classList.add('hidden');
@@ -125,10 +139,14 @@ async function renderSearchResults(query) {
   searchBooksContainer.innerHTML = '';
 
   const books = await fetchBooksBySearch(query, null, 20);
-  if (books.length === 0) searchBooksContainer.textContent = 'No results found.';
-  else books.forEach(b => searchBooksContainer.appendChild(createBookCard(b)));
+  if (books.length === 0) {
+    searchBooksContainer.textContent = 'No results found.';
+  } else {
+    books.forEach(b => searchBooksContainer.appendChild(createBookCard(b)));
+  }
 }
 
+// Search input
 let debounceTimeout;
 searchInput.addEventListener('input', e => {
   clearTimeout(debounceTimeout);
