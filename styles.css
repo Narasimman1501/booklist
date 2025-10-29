@@ -1,210 +1,155 @@
-body {
-  font-family: 'Segoe UI', sans-serif;
-  margin: 0;
-  background-color: #eae4cf;
+// ===== Helper to fetch books from Open Library =====
+async function fetchBooks(subject, containerId) {
+  const url = `https://openlibrary.org/subjects/${subject}.json?limit=12`;
+  const response = await fetch(url);
+  const data = await response.json();
+  const container = document.getElementById(containerId);
+  container.innerHTML = ""; // clear existing
+
+  data.works.forEach(book => {
+    const title = book.title;
+    const author = book.authors?.[0]?.name || "Unknown";
+    const cover = book.cover_id
+      ? `https://covers.openlibrary.org/b/id/${book.cover_id}-M.jpg`
+      : "images/placeholder.jpg";
+
+    const card = document.createElement("div");
+    card.className = "book-card";
+    card.innerHTML = `
+      <img src="${cover}" alt="${title}">
+      <h4>${title}</h4>
+      <p>${author}</p>
+      <button>Read</button>
+    `;
+    container.appendChild(card);
+  });
 }
 
-/* ===== Navbar ===== */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: #e3dec3;
-  padding: 10px 30px;
-}
+// ===== Fetch sample subjects =====
+fetchBooks("science_fiction", "trending-books");
+fetchBooks("classics", "classic-books");
 
-.logo {
-  font-weight: bold;
-  font-size: 1.3em;
-}
+// ===== Search feature =====
+document.getElementById("search-box").addEventListener("keypress", async (e) => {
+  if (e.key === "Enter") {
+    const query = e.target.value.trim();
+    if (!query) return;
+    const res = await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=10`);
+    const data = await res.json();
 
-nav {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
+    const container = document.getElementById("trending-books");
+    container.innerHTML = `<h3>Search Results for "${query}"</h3>`;
 
-nav a {
-  text-decoration: none;
-  color: #333;
-}
+    data.docs.forEach(book => {
+      const cover = book.cover_i
+        ? `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`
+        : "images/placeholder.jpg";
+      const title = book.title || "Untitled";
+      const author = book.author_name ? book.author_name[0] : "Unknown";
 
-nav input {
-  padding: 7px;
-  border-radius: 5px;
-  border: 1px solid #aaa;
-}
+      const card = document.createElement("div");
+      card.className = "book-card";
+      card.innerHTML = `
+        <img src="${cover}" alt="${title}">
+        <h4>${title}</h4>
+        <p>${author}</p>
+        <button>View</button>
+      `;
+      container.appendChild(card);
+    });
+  }
+});
 
-.btn {
-  border: none;
-  padding: 7px 15px;
-  border-radius: 5px;
-  background: #ccc;
-  cursor: pointer;
-  transition: background 0.3s;
-}
+// ===== My List (Local Storage) =====
+function loadMyList() {
+  const saved = JSON.parse(localStorage.getItem("myList")) || [];
+  const container = document.getElementById("my-list-container");
+  container.innerHTML = "";
 
-.btn:hover {
-  background: #bbb;
-}
-
-.btn.primary {
-  background: #0077b6;
-  color: white;
-}
-
-.btn.primary:hover {
-  background: #005f87;
-}
-
-/* ===== Welcome Section ===== */
-.welcome {
-  text-align: center;
-  background: #fff;
-  padding: 30px 10px;
-}
-
-.features {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  flex-wrap: wrap;
-  margin-top: 20px;
-}
-
-.feature {
-  background: #f8f8f8;
-  border: 1px solid #ddd;
-  padding: 20px;
-  width: 250px;
-  border-radius: 10px;
-}
-
-/* ===== Book Sections ===== */
-.book-section {
-  padding: 20px;
-  background: #fdfaf3;
-}
-
-.book-section h2 {
-  margin-left: 20px;
-}
-
-.book-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
-}
-
-.book-card {
-  background: white;
-  border: 1px solid #ccc;
-  width: 150px;
-  text-align: center;
-  border-radius: 10px;
-  overflow: hidden;
-  transition: transform 0.2s;
-}
-
-.book-card:hover {
-  transform: scale(1.05);
-}
-
-.book-card img {
-  width: 100%;
-  height: 220px;
-  object-fit: cover;
-}
-
-.book-card h4 {
-  margin: 10px 5px 5px 5px;
-  font-size: 1em;
-}
-
-.book-card p {
-  color: #666;
-  margin: 0 0 10px 0;
-}
-
-.book-card button {
-  width: 100%;
-  border: none;
-  padding: 10px;
-  background: #0077b6;
-  color: white;
-  cursor: pointer;
-  border-radius: 0 0 10px 10px;
-}
-
-.book-card button:hover {
-  background: #005f87;
-}
-
-.save-btn {
-  background: #e63946;
-  border-radius: 0;
-}
-
-.save-btn:hover {
-  background: #b82b36;
-}
-
-/* ===== Modal Styling ===== */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow-y: auto;
-  background-color: rgba(0, 0, 0, 0.6);
-}
-
-.modal-content {
-  background-color: #fff;
-  margin: 60px auto;
-  padding: 20px;
-  border-radius: 10px;
-  width: 80%;
-  max-width: 800px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-  position: relative;
-}
-
-.modal-content h2 {
-  margin-top: 0;
-  text-align: center;
-}
-
-.close {
-  color: #333;
-  position: absolute;
-  top: 10px;
-  right: 15px;
-  font-size: 28px;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-.close:hover {
-  color: #0077b6;
-}
-
-/* ===== Responsive ===== */
-@media screen and (max-width: 600px) {
-  .features {
-    flex-direction: column;
-    align-items: center;
+  if (saved.length === 0) {
+    container.innerHTML = "<p>Your list is empty.</p>";
+    return;
   }
 
-  nav {
-    flex-wrap: wrap;
-  }
+  saved.forEach(book => {
+    const card = document.createElement("div");
+    card.className = "book-card";
+    card.innerHTML = `
+      <img src="${book.cover}" alt="${book.title}">
+      <h4>${book.title}</h4>
+      <p>${book.author}</p>
+      <button class="remove-btn" data-title="${book.title}">Remove</button>
+    `;
+    container.appendChild(card);
+  });
 
-  .book-card {
-    width: 45%;
+  document.querySelectorAll(".remove-btn").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      const title = e.target.dataset.title;
+      removeFromMyList(title);
+      loadMyList();
+    });
+  });
+}
+
+function addToMyList(book) {
+  let myList = JSON.parse(localStorage.getItem("myList")) || [];
+  if (!myList.some(b => b.title === book.title)) {
+    myList.push(book);
+    localStorage.setItem("myList", JSON.stringify(myList));
+    alert(`Added "${book.title}" to your list! ❤️`);
+  } else {
+    alert(`"${book.title}" is already in your list.`);
   }
 }
+
+function removeFromMyList(title) {
+  let myList = JSON.parse(localStorage.getItem("myList")) || [];
+  myList = myList.filter(b => b.title !== title);
+  localStorage.setItem("myList", JSON.stringify(myList));
+}
+
+// ===== Attach Save buttons =====
+function attachSaveButtons() {
+  document.querySelectorAll(".book-card").forEach(card => {
+    const existingSave = card.querySelector(".save-btn");
+    if (existingSave) return; // avoid duplicates
+    const title = card.querySelector("h4")?.textContent;
+    const author = card.querySelector("p")?.textContent;
+    const cover = card.querySelector("img")?.src;
+
+    if (title && author && cover) {
+      const saveBtn = document.createElement("button");
+      saveBtn.textContent = "❤️ Save";
+      saveBtn.classList.add("save-btn");
+      saveBtn.addEventListener("click", () => {
+        addToMyList({ title, author, cover });
+      });
+      card.appendChild(saveBtn);
+    }
+  });
+}
+
+// Observe new book cards
+const observer = new MutationObserver(() => attachSaveButtons());
+observer.observe(document.body, { childList: true, subtree: true });
+
+// ===== Modal Controls =====
+const modal = document.getElementById("myListModal");
+const openBtn = document.getElementById("my-list-btn");
+const closeBtn = document.querySelector(".close");
+
+openBtn.onclick = function() {
+  loadMyList();
+  modal.style.display = "block";
+};
+
+closeBtn.onclick = function() {
+  modal.style.display = "none";
+};
+
+window.onclick = function(e) {
+  if (e.target === modal) {
+    modal.style.display = "none";
+  }
+};
