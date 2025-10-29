@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Browse | BookList</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
   <header class="navbar">
@@ -18,6 +18,11 @@
   </header>
 
   <main class="container">
+    <section class="search-bar">
+      <input type="text" id="browseSearch" placeholder="Search within genres..." />
+      <button id="browseSearchBtn">Search</button>
+    </section>
+
     <section class="filter-section">
       <h2>Browse by Genre</h2>
       <select id="genreSelect">
@@ -32,10 +37,7 @@
     </section>
 
     <section id="genreResults" class="section">
-      <div class="loading" id="genreLoading">
-        <div class="spinner"></div>
-        <p>Loading books...</p>
-      </div>
+      <div class="loading" id="genreLoading"><div class="spinner"></div><p>Loading books...</p></div>
       <div class="carousel" id="genreList"></div>
     </section>
   </main>
