@@ -1,28 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BookWorld | Book Recommendations</title>
-  <link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BookWorld</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Navbar -->
-  <header class="navbar">
-    <div class="logo">📚 BookWorld</div>
-    <nav>
-      <input type="text" id="searchInput" placeholder="Search books..." />
-    </nav>
-  </header>
+  <div class="navbar">
+    <h1>📚 BookWorld</h1>
+    <input type="text" id="searchInput" placeholder="Search books...">
+  </div>
 
-  <!-- Search Results -->
+  <div id="genresContainer"></div>
+
   <section id="searchResults" class="hidden">
-    <h2>Search Results</h2>
+    <h2>🔍 Search Results</h2>
     <div id="searchBooks" class="books-row"></div>
   </section>
-
-  <!-- Genres -->
-  <div id="genresContainer"></div>
 
   <script src="script.js"></script>
 </body>
