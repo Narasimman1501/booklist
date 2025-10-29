@@ -13,7 +13,7 @@ const specialRows = [
   { name: 'Popular', query: 'a', sort: 'edition_count desc', emoji: '🔥' },
 ];
 
-const genresContainer = document.getElementById('genresContainer');
+const rowsContainer = document.getElementById('rowsContainer');
 const searchInput = document.getElementById('searchInput');
 const searchResultsSection = document.getElementById('searchResults');
 const searchBooksContainer = document.getElementById('searchBooks');
@@ -58,7 +58,7 @@ async function fetchTrendingBooks(limit = 12) {
   }
 }
 
-// Fetch books by search or genre
+// Fetch books by search
 async function fetchBooksBySearch(query, sort = null, limit = 12) {
   try {
     let url = `https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=${limit}&fields=title,author_name,cover_i,edition_count`;
@@ -73,7 +73,7 @@ async function fetchBooksBySearch(query, sort = null, limit = 12) {
   }
 }
 
-// Render Trending, Top Rated, Popular
+// Render Trending / Top Rated / Popular
 async function renderSpecialRows() {
   for (const row of specialRows) {
     const section = document.createElement('section');
@@ -81,10 +81,11 @@ async function renderSpecialRows() {
     const heading = document.createElement('h2');
     heading.textContent = `${row.emoji} ${row.name}`;
     section.appendChild(heading);
+
     const booksRow = document.createElement('div');
     booksRow.className = 'books-row';
     section.appendChild(booksRow);
-    genresContainer.parentNode.insertBefore(section, genresContainer);
+    rowsContainer.appendChild(section);
 
     let books = [];
     if (row.endpoint) {
@@ -103,20 +104,17 @@ async function renderSpecialRows() {
 
 // Render Genres
 async function renderGenres() {
-  genresContainer.innerHTML = '';
-  searchResultsSection.classList.add('hidden');
-  genresContainer.style.display = 'block';
-
   for (const genre of genres) {
     const section = document.createElement('section');
     section.className = 'book-section';
     const heading = document.createElement('h2');
     heading.textContent = `${genre.emoji} ${genre.name}`;
     section.appendChild(heading);
+
     const booksRow = document.createElement('div');
     booksRow.className = 'books-row';
     section.appendChild(booksRow);
-    genresContainer.appendChild(section);
+    rowsContainer.appendChild(section);
 
     const books = await fetchBooksBySearch(genre.query, null, 12);
     if (books.length === 0) {
@@ -131,10 +129,10 @@ async function renderGenres() {
 async function renderSearchResults(query) {
   if (!query.trim()) {
     searchResultsSection.classList.add('hidden');
-    genresContainer.style.display = 'block';
+    rowsContainer.style.display = 'block';
     return;
   }
-  genresContainer.style.display = 'none';
+  rowsContainer.style.display = 'none';
   searchResultsSection.classList.remove('hidden');
   searchBooksContainer.innerHTML = '';
 
@@ -146,7 +144,7 @@ async function renderSearchResults(query) {
   }
 }
 
-// Search input
+// Search input with debounce
 let debounceTimeout;
 searchInput.addEventListener('input', e => {
   clearTimeout(debounceTimeout);
