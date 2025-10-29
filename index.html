@@ -3,26 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>BookWorld</title>
+  <title>BookWorld • AniList Style</title>
   <link rel="stylesheet" href="styles.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
 </head>
 <body>
   <header>
-    <div class="logo">📚 <strong>BookWorld</strong></div>
-    <div class="search-container">
-      <input id="searchInput" type="text" placeholder="Search for books..." />
-      <button id="signInBtn">Sign In</button>
-    </div>
+    <h1>📚 BookWorld</h1>
+    <input type="text" id="searchInput" placeholder="Search books or authors..." autocomplete="off" />
   </header>
 
-  <main>
-    <section id="searchResults" class="book-section" style="display:none;">
-      <h2>🔍 Search Results</h2>
-      <div class="books-row" id="searchBooks"></div>
-    </section>
+  <main id="mainContent">
+    <div id="genresContainer"></div>
 
-    <section id="genresContainer"></section>
+    <section id="searchResults" class="hidden">
+      <h2>🔍 Search Results</h2>
+      <div id="searchBooks" class="books-row"></div>
+    </section>
   </main>
 
   <script src="script.js"></script>
