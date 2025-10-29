@@ -20,7 +20,7 @@ function createBookCard(book, savedPage = false) {
   if (!savedPage) {
     div.querySelector('.saveBtn').addEventListener('click', () => {
       const myList = JSON.parse(localStorage.getItem('myList')) || [];
-      if (!myList.some(b => b.key === book.key)) {
+      if (!myList.some(b => b.key === book.key && b.title === title)) {
         myList.push(book);
         localStorage.setItem('myList', JSON.stringify(myList));
         alert('Book saved to My List!');
