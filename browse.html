@@ -1,40 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Browse - BookList+</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Browse | BookList</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-<nav class="main-nav">
-  <div class="logo" onclick="location.href='index.html'">BookList+</div>
-  <div class="nav-links">
-    <a href="index.html" class="nav-link">Home</a>
-    <a href="browse.html" class="nav-link">Browse</a>
-    <a href="mylist.html" class="nav-link">My List</a>
-    <button id="themeToggle">🌞</button>
-  </div>
-</nav>
+  <header class="navbar">
+    <h1 class="logo">📚 BookList</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="browse.html" class="active">Browse</a>
+      <a href="mylist.html">My List</a>
+      <button id="themeToggle">🌙</button>
+    </nav>
+  </header>
 
-<div class="container">
-  <h1>Browse by Genre</h1>
-  <div class="browse-filters" id="genre-filters">
-    <button data-genre="fantasy">Fantasy</button>
-    <button data-genre="science_fiction">Science Fiction</button>
-    <button data-genre="romance">Romance</button>
-    <button data-genre="mystery">Mystery</button>
-    <button data-genre="thriller">Thriller</button>
-    <button data-genre="horror">Horror</button>
-    <button data-genre="adventure">Adventure</button>
-    <button data-genre="historical_fiction">Historical Fiction</button>
-    <button data-genre="poetry">Poetry</button>
-    <button data-genre="children">Children</button>
-  </div>
+  <main class="container">
+    <section class="filter-section">
+      <h2>Browse by Genre</h2>
+      <select id="genreSelect">
+        <option value="">Select a genre</option>
+        <option value="fantasy">Fantasy</option>
+        <option value="romance">Romance</option>
+        <option value="science_fiction">Science Fiction</option>
+        <option value="mystery_and_detective_stories">Mystery</option>
+        <option value="young_adult">Young Adult</option>
+        <option value="history">History</option>
+      </select>
+    </section>
 
-  <div class="book-row" id="browse-row"></div>
-</div>
+    <section id="genreResults" class="section">
+      <div class="loading" id="genreLoading">
+        <div class="spinner"></div>
+        <p>Loading books...</p>
+      </div>
+      <div class="carousel" id="genreList"></div>
+    </section>
+  </main>
 
-<script src="script.js"></script>
+  <footer>
+    <p>© 2025 BookList</p>
+  </footer>
+
+  <script src="js/createBookCard.js"></script>
+  <script src="js/browse.js"></script>
 </body>
 </html>
