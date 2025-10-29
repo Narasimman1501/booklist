@@ -7,17 +7,20 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="navbar">
-    <h1>📚 BookWorld</h1>
-    <input type="text" id="searchInput" placeholder="Search books...">
-  </div>
+  <header class="navbar">
+    <div class="logo">📚 BookWorld</div>
+    <nav>
+      <input type="text" id="searchInput" placeholder="Search books..." />
+    </nav>
+  </header>
 
-  <div id="rowsContainer"></div>
-
-  <section id="searchResults" class="hidden">
-    <h2>🔍 Search Results</h2>
-    <div id="searchBooks" class="books-row"></div>
-  </section>
+  <main>
+    <div id="genresContainer"></div>
+    <section id="searchResults" class="hidden">
+      <h2>Search Results</h2>
+      <div id="searchBooks" class="books-row"></div>
+    </section>
+  </main>
 
   <script src="script.js"></script>
 </body>
