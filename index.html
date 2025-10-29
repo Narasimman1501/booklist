@@ -2,24 +2,27 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>BookWorld • AniList Style</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BookWorld | Book Recommendations</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header>
-    <h1>📚 BookWorld</h1>
-    <input type="text" id="searchInput" placeholder="Search books or authors..." autocomplete="off" />
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="logo">📚 BookWorld</div>
+    <nav>
+      <input type="text" id="searchInput" placeholder="Search books..." />
+    </nav>
   </header>
 
-  <main id="mainContent">
-    <div id="genresContainer"></div>
+  <!-- Search Results -->
+  <section id="searchResults" class="hidden">
+    <h2>Search Results</h2>
+    <div id="searchBooks" class="books-row"></div>
+  </section>
 
-    <section id="searchResults" class="hidden">
-      <h2>🔍 Search Results</h2>
-      <div id="searchBooks" class="books-row"></div>
-    </section>
-  </main>
+  <!-- Genres -->
+  <div id="genresContainer"></div>
 
   <script src="script.js"></script>
 </body>
