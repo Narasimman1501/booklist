@@ -1,1 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My List | BookList</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="navbar">
+    <h1 class="logo">📚 BookList</h1>
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="browse.html">Browse</a>
+      <a href="mylist.html" class="active">My List</a>
+      <button id="themeToggle">🌙</button>
+    </nav>
+  </header>
+
+  <main class="container">
+    <h2>❤️ My Saved Books</h2>
+    <div id="myList" class="grid"></div>
+  </main>
+
+  <footer>
+    <p>© 2025 BookList</p>
+  </footer>
+
+  <script src="js/createBookCard.js"></script>
+  <script>
+    const myListContainer = document.getElementById('myList');
+    const saved = JSON.parse(localStorage.getItem('myList')) || [];
+
+    if (saved.length === 0) {
+      myListContainer.innerHTML = "<p>No books saved yet.</p>";
+    } else {
+      saved.forEach(book => {
+        const card = createBookCard(book, true);
+        myListContainer.appendChild(card);
+      });
+    }
+  </script>
+</body>
+</html>
 
