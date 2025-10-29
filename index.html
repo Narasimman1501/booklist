@@ -2,78 +2,28 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BookWorld | Discover & Read</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BookWorld</title>
   <link rel="stylesheet" href="styles.css" />
-  <link rel="icon" href="https://via.placeholder.com/32x32.png?text=B" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet" />
 </head>
 <body>
-  <!-- Navbar -->
-  <header class="navbar">
-    <div class="logo">📚 <b>BookWorld</b></div>
-    <nav>
-      <a href="#" id="my-list-btn">My List</a>
-      <input type="text" id="search-box" placeholder="Search for books..." />
-      <button class="btn primary">Sign In</button>
-    </nav>
+  <header>
+    <div class="logo">📚 <strong>BookWorld</strong></div>
+    <div class="search-container">
+      <input id="searchInput" type="text" placeholder="Search for books..." />
+      <button id="signInBtn">Sign In</button>
+    </div>
   </header>
 
-  <!-- Welcome Section -->
-  <section class="welcome">
-    <h2>Welcome to BookWorld</h2>
-    <p>Discover trending reads, timeless classics, and millions of books from Open Library.</p>
-  </section>
+  <main>
+    <section id="searchResults" class="book-section" style="display:none;">
+      <h2>🔍 Search Results</h2>
+      <div class="books-row" id="searchBooks"></div>
+    </section>
 
-  <!-- Search Results -->
-  <section id="search-section" class="book-section" style="display:none;">
-    <h2>🔍 Search Results</h2>
-    <div class="book-list list-view" id="search-results"></div>
-  </section>
-
-  <!-- Book Sections -->
-  <section class="book-section">
-    <h2>🔥 Trending Books</h2>
-    <div class="book-row" id="trending-books"></div>
-  </section>
-
-  <section class="book-section">
-    <h2>🏰 Classic Literature</h2>
-    <div class="book-row" id="classics"></div>
-  </section>
-
-  <section class="book-section">
-    <h2>🚀 Science Fiction</h2>
-    <div class="book-row" id="science-fiction"></div>
-  </section>
-
-  <section class="book-section">
-    <h2>❤️ Romance</h2>
-    <div class="book-row" id="romance"></div>
-  </section>
-
-  <section class="book-section">
-    <h2>🕵️ Mystery</h2>
-    <div class="book-row" id="mystery"></div>
-  </section>
-
-  <section class="book-section">
-    <h2>🎓 Education</h2>
-    <div class="book-row" id="education"></div>
-  </section>
-
-  <section class="book-section">
-    <h2>🎭 Drama</h2>
-    <div class="book-row" id="drama"></div>
-  </section>
-
-  <!-- My List Modal -->
-  <div id="myListModal" class="modal">
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <h2>My List ❤️</h2>
-      <div id="my-list-container" class="book-list"></div>
-    </div>
-  </div>
+    <section id="genresContainer"></section>
+  </main>
 
   <script src="script.js"></script>
 </body>
