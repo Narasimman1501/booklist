@@ -1,28 +1,72 @@
+/* =========================
+   General Styles
+   ========================= */
 body {
   font-family: 'Segoe UI', sans-serif;
   margin: 0;
-  background-color: #121212;
+  background-color: #0d0d0d; /* True black */
   color: #e0e0e0;
 }
 
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* =========================
+   Navbar
+   ========================= */
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #1e1e2f;
-  color: white;
-  padding: 10px 30px;
+  background: #0a0a0a; /* Darker black */
+  color: #ffffff;
+  padding: 12px 30px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.7);
 }
 
-.navbar input {
+.navbar .logo {
+  font-weight: bold;
+  font-size: 1.6em;
+  color: #ffffff;
+}
+
+.navbar nav {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.navbar nav input {
   padding: 7px 10px;
   border-radius: 5px;
   border: none;
   width: 200px;
-  background-color: #2c2c3c;
-  color: white;
+  background-color: #1a1a1a; /* darker input */
+  color: #ffffff;
 }
 
+.navbar nav button {
+  padding: 7px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #1f1f1f;
+  color: #ffffff;
+  transition: background 0.3s;
+}
+
+.navbar nav button:hover {
+  background-color: #333333;
+}
+
+/* =========================
+   Book Sections
+   ========================= */
 .book-section {
   margin: 20px 0;
 }
@@ -30,8 +74,13 @@ body {
 .book-section h2 {
   margin-left: 10px;
   color: #ffffff;
+  font-size: 1.3em;
+  font-weight: 600;
 }
 
+/* =========================
+   Horizontal Book Rows
+   ========================= */
 .books-row {
   display: flex;
   gap: 15px;
@@ -50,21 +99,25 @@ body {
   border-radius: 4px;
 }
 
+/* =========================
+   Book Cards
+   ========================= */
 .book-card {
-  background: #1e1e2f;
+  background: #1a1a1a; /* Dark card for contrast */
   width: 140px;
   flex-shrink: 0;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.7);
   display: flex;
   flex-direction: column;
   scroll-snap-align: start;
-  transition: transform 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .book-card:hover {
   transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(255,255,255,0.2);
 }
 
 .book-card img.book-cover {
@@ -79,7 +132,7 @@ body {
 
 .book-title {
   font-weight: bold;
-  font-size: 0.9em;
+  font-size: 0.95em;
   margin-bottom: 3px;
   color: #ffffff;
 }
@@ -89,6 +142,41 @@ body {
   color: #bbbbbb;
 }
 
+/* =========================
+   Search Results
+   ========================= */
 .hidden {
   display: none;
+}
+
+/* =========================
+   Responsive
+   ========================= */
+@media screen and (max-width: 768px) {
+  .books-row {
+    gap: 10px;
+    padding: 5px;
+  }
+
+  .book-card {
+    width: 120px;
+  }
+
+  .navbar nav input {
+    width: 120px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .books-row {
+    gap: 8px;
+  }
+
+  .book-card {
+    width: 100px;
+  }
+
+  .book-card img.book-cover {
+    height: 160px;
+  }
 }
