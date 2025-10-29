@@ -1,27 +1,17 @@
-/* =========================
-   General Styles
-   ========================= */
+/* ========= GENERAL ========= */
 body {
   font-family: 'Segoe UI', sans-serif;
   margin: 0;
-  background-color: #0d0d0d; /* True black */
+  background-color: #0d0d0d;
   color: #e0e0e0;
 }
 
-a {
-  text-decoration: none;
-  color: inherit;
-}
-
-/* =========================
-   Navbar
-   ========================= */
+/* ========= NAVBAR ========= */
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #0a0a0a; /* Darker black */
-  color: #ffffff;
+  background: #0a0a0a;
   padding: 12px 30px;
   position: sticky;
   top: 0;
@@ -32,41 +22,18 @@ a {
 .navbar .logo {
   font-weight: bold;
   font-size: 1.6em;
-  color: #ffffff;
 }
 
-.navbar nav {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.navbar nav input {
+.navbar input {
   padding: 7px 10px;
   border-radius: 5px;
   border: none;
   width: 200px;
-  background-color: #1a1a1a; /* darker input */
+  background-color: #1a1a1a;
   color: #ffffff;
 }
 
-.navbar nav button {
-  padding: 7px 15px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  background-color: #1f1f1f;
-  color: #ffffff;
-  transition: background 0.3s;
-}
-
-.navbar nav button:hover {
-  background-color: #333333;
-}
-
-/* =========================
-   Book Sections
-   ========================= */
+/* ========= BOOK SECTIONS ========= */
 .book-section {
   margin: 20px 0;
 }
@@ -78,9 +45,7 @@ a {
   font-weight: 600;
 }
 
-/* =========================
-   Horizontal Book Rows
-   ========================= */
+/* ========= HORIZONTAL SCROLL ========= */
 .books-row {
   display: flex;
   gap: 15px;
@@ -99,11 +64,9 @@ a {
   border-radius: 4px;
 }
 
-/* =========================
-   Book Cards
-   ========================= */
+/* ========= BOOK CARD ========= */
 .book-card {
-  background: #1a1a1a; /* Dark card for contrast */
+  background: #1a1a1a;
   width: 140px;
   flex-shrink: 0;
   border-radius: 8px;
@@ -142,27 +105,20 @@ a {
   color: #bbbbbb;
 }
 
-/* =========================
-   Search Results
-   ========================= */
+/* ========= SEARCH ========= */
 .hidden {
   display: none;
 }
 
-/* =========================
-   Responsive
-   ========================= */
+/* ========= RESPONSIVE ========= */
 @media screen and (max-width: 768px) {
   .books-row {
     gap: 10px;
-    padding: 5px;
   }
-
   .book-card {
     width: 120px;
   }
-
-  .navbar nav input {
+  .navbar input {
     width: 120px;
   }
 }
@@ -171,11 +127,9 @@ a {
   .books-row {
     gap: 8px;
   }
-
   .book-card {
     width: 100px;
   }
-
   .book-card img.book-cover {
     height: 160px;
   }
