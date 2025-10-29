@@ -1,8 +1,8 @@
 body {
   font-family: 'Segoe UI', sans-serif;
   margin: 0;
-  background-color: #f4f1ea;
-  color: #333;
+  background-color: #faf8f4;
+  color: #222;
 }
 
 /* Navbar */
@@ -10,100 +10,99 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #f0e6cc;
+  background: #e9e0c5;
   padding: 10px 30px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
-
 .logo {
-  font-weight: bold;
-  font-size: 1.4em;
-  color: #2c3e50;
+  font-size: 1.3em;
 }
-
 nav {
   display: flex;
   align-items: center;
   gap: 10px;
 }
-
-nav a {
-  text-decoration: none;
-  color: #333;
-  font-weight: 500;
-}
-
 nav input {
-  padding: 8px 12px;
-  border-radius: 6px;
-  border: 1px solid #aaa;
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #bbb;
   width: 200px;
 }
-
-.btn {
-  border: none;
-  padding: 7px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
 .btn.primary {
   background: #0077b6;
+  border: none;
   color: white;
+  border-radius: 5px;
+  padding: 7px 15px;
+  cursor: pointer;
+}
+.btn.primary:hover {
+  background: #005f87;
 }
 
-/* Welcome */
+/* Welcome Section */
 .welcome {
   text-align: center;
   background: #fff;
-  padding: 40px 20px;
+  padding: 30px 10px;
+  margin-bottom: 10px;
 }
 
-/* Books */
+/* Book Sections */
 .book-section {
-  padding: 20px;
-  background: #faf9f5;
+  padding: 15px 20px;
+  background: #fefcf9;
+  margin-bottom: 10px;
+}
+.book-section h2 {
+  margin-bottom: 10px;
 }
 
-.book-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 20px;
-  justify-items: center;
-  margin-top: 20px;
+/* Horizontal Row (scrolling) */
+.book-row {
+  display: flex;
+  gap: 15px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  scroll-behavior: smooth;
+}
+.book-row::-webkit-scrollbar {
+  height: 8px;
+}
+.book-row::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 5px;
 }
 
+/* Book Cards */
 .book-card {
+  flex: 0 0 150px;
   background: white;
-  border: 1px solid #ddd;
   border-radius: 10px;
   overflow: hidden;
-  width: 160px;
-  transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid #ddd;
+  text-align: center;
+  transition: transform 0.2s ease;
 }
-
 .book-card:hover {
   transform: scale(1.05);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
-
 .book-card img {
   width: 100%;
-  height: 230px;
+  height: 220px;
   object-fit: cover;
 }
-
 .book-card h4 {
-  margin: 8px;
-  font-size: 1em;
+  margin: 8px 5px 3px 5px;
+  font-size: 0.95em;
 }
-
 .book-card p {
-  margin: 0 8px 8px;
   color: #666;
-  font-size: 0.9em;
+  font-size: 0.85em;
+  margin: 0 0 8px 0;
 }
-
 .book-card button {
   width: 100%;
   border: none;
@@ -111,52 +110,59 @@ nav input {
   background: #0077b6;
   color: white;
   cursor: pointer;
-  border-radius: 0 0 10px 10px;
 }
-
 .book-card button:hover {
   background: #005f87;
 }
 
-.save-btn {
-  background: #e63946;
+/* Search Results - list style */
+.list-view {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.list-view .book-card {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  width: 100%;
+  max-width: 700px;
+  margin: auto;
+  border-radius: 10px;
+}
+.list-view .book-card img {
+  width: 120px;
+  height: 160px;
+}
+.list-view .book-card div {
+  flex: 1;
+  text-align: left;
+  padding: 10px;
 }
 
-.save-btn:hover {
-  background: #c92a36;
-}
-
-/* Modal */
+/* Modal (My List) */
 .modal {
   display: none;
   position: fixed;
-  z-index: 1000;
-  left: 0; top: 0;
-  width: 100%; height: 100%;
-  background-color: rgba(0,0,0,0.6);
-  overflow-y: auto;
+  z-index: 999;
+  padding-top: 80px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
 }
-
 .modal-content {
-  background: white;
-  margin: 60px auto;
+  background-color: #fff;
+  margin: auto;
   padding: 20px;
-  border-radius: 10px;
   width: 80%;
-  max-width: 800px;
-  position: relative;
+  max-height: 80vh;
+  overflow-y: auto;
+  border-radius: 10px;
 }
-
 .close {
-  position: absolute;
-  right: 15px; top: 10px;
-  font-size: 28px;
+  float: right;
+  font-size: 1.5em;
   cursor: pointer;
-}
-
-/* Responsive */
-@media (max-width: 600px) {
-  .book-list {
-    grid-template-columns: repeat(2, 1fr);
-  }
 }
