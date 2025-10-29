@@ -1,18 +1,134 @@
-body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f9f9f9; }
-.dark { background:#121212; color:#eee; }
-.main-nav { display:flex; justify-content:space-between; align-items:center; padding:10px 20px; background:#fff; box-shadow:0 2px 5px rgba(0,0,0,0.1); position:sticky; top:0; z-index:100; }
-.main-nav .logo { font-weight:bold; cursor:pointer; }
-.main-nav .nav-links a, .main-nav #themeToggle { margin-left:15px; text-decoration:none; color:#333; cursor:pointer; }
-.container { padding:20px; }
-h1,h2 { margin:10px 0; }
-.book-row { display:flex; overflow-x:auto; gap:15px; padding-bottom:15px; scroll-behavior:smooth; }
-.book-card { min-width:180px; width:180px; height:300px; position:relative; border-radius:10px; overflow:hidden; background:#fff; box-shadow:0 2px 8px rgba(0,0,0,0.1); flex-shrink:0; cursor:pointer; transition:transform 0.2s; }
-.book-card:hover { transform:scale(1.05); }
-.book-card img { width:100%; height:270px; object-fit:cover; }
-.book-info { position:absolute; bottom:0; width:100%; background:rgba(0,0,0,0.7); color:#fff; padding:5px; text-align:center; }
-.book-info h3 { font-size:14px; margin:3px 0; }
-.book-info p { font-size:12px; margin:2px 0; }
-.add-mylist-btn { background:#ff6347; border:none; color:#fff; font-size:12px; padding:3px 6px; border-radius:4px; cursor:pointer; margin-top:3px; }
-.browse-filters { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px; }
-.browse-filters button { padding:6px 12px; border:none; border-radius:20px; cursor:pointer; background:#667eea; color:#fff; transition:0.3s; }
-.browse-filters button:hover { background:#764ba2; }
+:root {
+  --bg: #ffffff;
+  --text: #222;
+  --card: #f8f9fa;
+  --accent: #667eea;
+}
+[data-theme="dark"] {
+  --bg: #0f0f0f;
+  --text: #f8f8f8;
+  --card: #1e1e1e;
+  --accent: #7b6ff0;
+}
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+}
+body {
+  background: var(--bg);
+  color: var(--text);
+  transition: background 0.3s, color 0.3s;
+}
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  background: var(--card);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.navbar a {
+  color: var(--text);
+  margin: 0 15px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+.navbar a:hover, .navbar a.active {
+  color: var(--accent);
+}
+#themeToggle {
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 40px 20px;
+}
+.section {
+  margin-bottom: 50px;
+}
+.section h2 {
+  margin-bottom: 15px;
+  color: var(--accent);
+}
+.carousel {
+  display: flex;
+  overflow-x: auto;
+  gap: 20px;
+  padding-bottom: 10px;
+}
+.carousel::-webkit-scrollbar {
+  height: 8px;
+}
+.carousel::-webkit-scrollbar-thumb {
+  background: var(--accent);
+  border-radius: 4px;
+}
+.book-card {
+  flex: 0 0 180px;
+  background: var(--card);
+  border-radius: 12px;
+  padding: 15px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.book-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+.book-card img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+.saveBtn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 15px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.saveBtn:hover {
+  background: #5555dd;
+}
+.loading {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  min-height: 150px;
+}
+.spinner {
+  border: 6px solid #ddd;
+  border-top: 6px solid var(--accent);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+footer {
+  text-align: center;
+  padding: 20px;
+  background: var(--card);
+  color: var(--text);
+  font-size: 0.9em;
+  margin-top: 40px;
+}
