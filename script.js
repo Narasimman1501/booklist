@@ -1,10 +1,8 @@
-const genres = [
-  { name: 'Classic Literature', query: 'classic_literature', emoji: '🏰' },
-  { name: 'Science Fiction', query: 'science_fiction', emoji: '🚀' },
-  { name: 'Fantasy', query: 'fantasy', emoji: '🐉' },
-  { name: 'Mystery', query: 'mystery', emoji: '🕵️‍♂️' },
-  { name: 'Romance', query: 'romance', emoji: '❤️' },
-  { name: 'Historical Fiction', query: 'historical_fiction', emoji: '🏺' },
+// --- New Rows ---
+const specialRows = [
+  { name: 'Trending', query: 'fiction', emoji: '📈' },
+  { name: 'Top Rated', query: 'fiction', emoji: '⭐' },
+  { name: 'Popular', query: 'fiction', emoji: '🔥' },
 ];
 
 const genresContainer = document.getElementById('genresContainer');
@@ -13,7 +11,6 @@ const searchResultsSection = document.getElementById('searchResults');
 const searchBooksContainer = document.getElementById('searchBooks');
 
 function createBookCard(book) {
-  // OpenLibrary covers come from different fields
   const coverId = book.cover_id || book.cover_i || (book.cover && book.cover.medium) || null;
   const coverUrl = coverId
     ? `https://covers.openlibrary.org/b/id/${coverId}-M.jpg`
@@ -41,7 +38,6 @@ function createBookCard(book) {
       <div class="book-author">${author}</div>
     </div>
   `;
-
   return card;
 }
 
@@ -49,7 +45,6 @@ async function fetchBooksBySubject(subject, limit = 12) {
   try {
     const res = await fetch(`https://openlibrary.org/subjects/${subject}.json?limit=${limit}`);
     if (!res.ok) throw new Error(`Failed to fetch subject ${subject}: ${res.status}`);
-
     const data = await res.json();
     return data.works || [];
   } catch (err) {
@@ -62,7 +57,6 @@ async function fetchBooksBySearch(query, limit = 24) {
   try {
     const res = await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=${limit}`);
     if (!res.ok) throw new Error(`Failed to search: ${res.status}`);
-
     const data = await res.json();
     return data.docs || [];
   } catch (err) {
@@ -75,9 +69,46 @@ function clearContainer(container) {
   container.innerHTML = '';
 }
 
+// --- Render Special Rows (Trending / Top Rated / Popular) ---
+async function renderSpecialRows() {
+  for (const row of specialRows) {
+    const section = document.createElement('section');
+    section.className = 'book-section';
+
+    const heading = document.createElement('h2');
+    heading.textContent = `${row.emoji} ${row.name}`;
+    section.appendChild(heading);
+
+    const booksRow = document.createElement('div');
+    booksRow.className = 'books-row';
+    section.appendChild(booksRow);
+
+    genresContainer.parentNode.insertBefore(section, genresContainer);
+
+    // Fetch 12 books using subject as placeholder
+    const books = await fetchBooksBySubject(row.query, 12);
+    if (!books.length) {
+      booksRow.textContent = 'No books found.';
+      continue;
+    }
+    books.forEach(book => booksRow.appendChild(createBookCard(book)));
+  }
+}
+
+// --- Genres ---
+const genres = [
+  { name: 'Classic Literature', query: 'classic_literature', emoji: '🏰' },
+  { name: 'Science Fiction', query: 'science_fiction', emoji: '🚀' },
+  { name: 'Fantasy', query: 'fantasy', emoji: '🐉' },
+  { name: 'Mystery', query: 'mystery', emoji: '🕵️‍♂️' },
+  { name: 'Romance', query: 'romance', emoji: '❤️' },
+  { name: 'Historical Fiction', query: 'historical_fiction', emoji: '🏺' },
+];
+
 async function renderGenres() {
   clearContainer(genresContainer);
   searchResultsSection.classList.add('hidden');
+  genresContainer.style.display = 'block';
 
   for (const genre of genres) {
     const section = document.createElement('section');
@@ -98,14 +129,11 @@ async function renderGenres() {
       booksRow.textContent = 'No books found.';
       continue;
     }
-
-    books.forEach(book => {
-      const card = createBookCard(book);
-      booksRow.appendChild(card);
-    });
+    books.forEach(book => booksRow.appendChild(createBookCard(book)));
   }
 }
 
+// --- Search ---
 async function renderSearchResults(query) {
   if (!query.trim()) {
     searchResultsSection.classList.add('hidden');
@@ -118,27 +146,21 @@ async function renderSearchResults(query) {
   clearContainer(searchBooksContainer);
 
   const books = await fetchBooksBySearch(query, 24);
-
   if (!books.length) {
     searchBooksContainer.textContent = 'No results found.';
     return;
   }
 
-  books.forEach(book => {
-    const card = createBookCard(book);
-    searchBooksContainer.appendChild(card);
-  });
+  books.forEach(book => searchBooksContainer.appendChild(createBookCard(book)));
 }
 
+// --- Search input ---
 let debounceTimeout;
 searchInput.addEventListener('input', e => {
   clearTimeout(debounceTimeout);
-
   const query = e.target.value;
-  debounceTimeout = setTimeout(() => {
-    renderSearchResults(query);
-  }, 400);
+  debounceTimeout = setTimeout(() => renderSearchResults(query), 400);
 });
 
-// Initial load
-renderGenres();
+// --- Initial load ---
+renderSpecialRows().then(() => renderGenres());
