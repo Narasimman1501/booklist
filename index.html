@@ -1,41 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>BookList+</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BookList | Discover Your Next Read</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="data:,">
 </head>
 <body>
-<nav class="main-nav">
-  <div class="logo" onclick="location.href='index.html'">BookList+</div>
-  <div class="nav-links">
-    <a href="index.html" class="nav-link">Home</a>
-    <a href="browse.html" class="nav-link">Browse</a>
-    <a href="mylist.html" class="nav-link">My List</a>
-    <button id="themeToggle">🌞</button>
-  </div>
-</nav>
+  <header class="navbar">
+    <h1 class="logo">📚 BookList</h1>
+    <nav>
+      <a href="index.html" class="active">Home</a>
+      <a href="browse.html">Browse</a>
+      <a href="mylist.html">My List</a>
+      <button id="themeToggle">🌙</button>
+    </nav>
+  </header>
 
-<div class="container">
-  <h1>Trending & Popular Books</h1>
+  <main class="container">
+    <section class="search-bar">
+      <input type="text" id="search" placeholder="Search for books..." />
+      <button id="searchBtn">Search</button>
+    </section>
 
-  <section id="trending" class="section">
-    <h2>🔥 Trending</h2>
-    <div class="book-row" id="trending-row"></div>
-  </section>
+    <section class="section" id="trending">
+      <h2>🔥 Trending</h2>
+      <div class="loading" id="trendingLoading">
+        <div class="spinner"></div>
+        <p>Loading trending books...</p>
+      </div>
+      <div class="carousel" id="trendingList"></div>
+    </section>
 
-  <section id="top-rated" class="section">
-    <h2>⭐ Top Rated</h2>
-    <div class="book-row" id="top-row"></div>
-  </section>
+    <section class="section" id="popular">
+      <h2>🌟 Popular</h2>
+      <div class="loading" id="popularLoading">
+        <div class="spinner"></div>
+        <p>Loading popular books...</p>
+      </div>
+      <div class="carousel" id="popularList"></div>
+    </section>
 
-  <section id="popular" class="section">
-    <h2>🌟 Popular</h2>
-    <div class="book-row" id="popular-row"></div>
-  </section>
-</div>
+    <section class="section" id="topRated">
+      <h2>🏆 Top Rated</h2>
+      <div class="loading" id="topRatedLoading">
+        <div class="spinner"></div>
+        <p>Loading top rated books...</p>
+      </div>
+      <div class="carousel" id="topRatedList"></div>
+    </section>
 
-<script src="script.js"></script>
+    <section class="section" id="searchResults" style="display:none;">
+      <h2>🔍 Search Results</h2>
+      <div class="loading" id="searchLoading">
+        <div class="spinner"></div>
+        <p>Searching books...</p>
+      </div>
+      <div class="carousel" id="searchList"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 BookList. Inspired by AniList.</p>
+  </footer>
+
+  <script src="js/createBookCard.js"></script>
+  <script src="js/script.js"></script>
 </body>
 </html>
