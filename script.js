@@ -60,9 +60,7 @@ async function fetchTrendingBooks(limit = 12) {
 async function fetchBooksBySearch(query, sort = null, limit = 12) {
   try {
     let url = `https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=${limit}&fields=title,author_name,cover_i,edition_count`;
-    if (sort) {
-      url += `&sort=${encodeURIComponent(sort)}`;
-    }
+    if (sort) url += `&sort=${encodeURIComponent(sort)}`;
     const res = await fetch(url);
     if (!res.ok) throw new Error(`Search fetch failed: ${res.status}`);
     const data = await res.json();
@@ -86,17 +84,11 @@ async function renderSpecialRows() {
     genresContainer.parentNode.insertBefore(section, genresContainer);
 
     let books = [];
-    if (row.endpoint) {
-      books = await fetchTrendingBooks(12);
-    } else {
-      books = await fetchBooksBySearch(row.query, row.sort, 12);
-    }
+    if (row.endpoint) books = await fetchTrendingBooks(12);
+    else books = await fetchBooksBySearch(row.query, row.sort, 12);
 
-    if (books.length === 0) {
-      booksRow.textContent = 'No books found.';
-    } else {
-      books.forEach(b => booksRow.appendChild(createBookCard(b)));
-    }
+    if (books.length === 0) booksRow.textContent = 'No books found.';
+    else books.forEach(b => booksRow.appendChild(createBookCard(b)));
   }
 }
 
@@ -117,11 +109,8 @@ async function renderGenres() {
     genresContainer.appendChild(section);
 
     const books = await fetchBooksBySearch(genre.query, null, 12);
-    if (books.length === 0) {
-      booksRow.textContent = 'No books found.';
-    } else {
-      books.forEach(b => booksRow.appendChild(createBookCard(b)));
-    }
+    if (books.length === 0) booksRow.textContent = 'No books found.';
+    else books.forEach(b => booksRow.appendChild(createBookCard(b)));
   }
 }
 
@@ -136,11 +125,8 @@ async function renderSearchResults(query) {
   searchBooksContainer.innerHTML = '';
 
   const books = await fetchBooksBySearch(query, null, 20);
-  if (books.length === 0) {
-    searchBooksContainer.textContent = 'No results found.';
-  } else {
-    books.forEach(b => searchBooksContainer.appendChild(createBookCard(b)));
-  }
+  if (books.length === 0) searchBooksContainer.textContent = 'No results found.';
+  else books.forEach(b => searchBooksContainer.appendChild(createBookCard(b)));
 }
 
 let debounceTimeout;
