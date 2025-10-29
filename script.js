@@ -20,7 +20,7 @@ function createBookCard(book) {
   const coverId = book.cover_id || book.cover_i || null;
   const coverUrl = coverId
     ? `https://covers.openlibrary.org/b/id/${coverId}-M.jpg`
-    : 'https://via.placeholder.com/140x210?text=No+Cover';
+    : 'https://via.placeholder.com/160x230?text=No+Cover';
 
   let author = 'Unknown Author';
   if (book.author_name && book.author_name.length > 0) {
@@ -55,10 +55,9 @@ async function fetchTrendingBooks(limit = 12) {
   }
 }
 
-async function fetchBooksBySearch(query, sort = null, limit = 12) {
+async function fetchBooksBySearch(query, limit = 12) {
   try {
-    let url = `https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=${limit}`;
-    if (sort) url += `&sort=${encodeURIComponent(sort)}`;
+    const url = `https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=${limit}&fields=title,author_name,cover_i`;
     const res = await fetch(url);
     if (!res.ok) throw new Error(`Search fetch failed: ${res.status}`);
     const data = await res.json();
@@ -76,20 +75,19 @@ async function renderSpecialRows() {
     const heading = document.createElement('h2');
     heading.textContent = `${row.emoji} ${row.name}`;
     section.appendChild(heading);
+
     const booksRow = document.createElement('div');
     booksRow.className = 'books-row';
     section.appendChild(booksRow);
+
     genresContainer.parentNode.insertBefore(section, genresContainer);
 
-    let books = [];
-    if (row.endpoint) {
-      books = await fetchTrendingBooks(12);
+    const books = await fetchTrendingBooks(12);
+    if (books.length === 0) {
+      booksRow.textContent = 'No books found.';
     } else {
-      books = await fetchBooksBySearch(row.query, row.sort, 12);
+      books.forEach(b => booksRow.appendChild(createBookCard(b)));
     }
-
-    if (books.length === 0) booksRow.textContent = 'No books found.';
-    else books.forEach(b => booksRow.appendChild(createBookCard(b)));
   }
 }
 
@@ -104,14 +102,19 @@ async function renderGenres() {
     const heading = document.createElement('h2');
     heading.textContent = `${genre.emoji} ${genre.name}`;
     section.appendChild(heading);
+
     const booksRow = document.createElement('div');
     booksRow.className = 'books-row';
     section.appendChild(booksRow);
+
     genresContainer.appendChild(section);
 
-    const books = await fetchBooksBySearch(genre.query, null, 12);
-    if (books.length === 0) booksRow.textContent = 'No books found.';
-    else books.forEach(b => booksRow.appendChild(createBookCard(b)));
+    const books = await fetchBooksBySearch(genre.query, 12);
+    if (books.length === 0) {
+      booksRow.textContent = 'No books found.';
+    } else {
+      books.forEach(b => booksRow.appendChild(createBookCard(b)));
+    }
   }
 }
 
@@ -125,9 +128,12 @@ async function renderSearchResults(query) {
   searchResultsSection.classList.remove('hidden');
   searchBooksContainer.innerHTML = '';
 
-  const books = await fetchBooksBySearch(query, null, 20);
-  if (books.length === 0) searchBooksContainer.textContent = 'No results found.';
-  else books.forEach(b => searchBooksContainer.appendChild(createBookCard(b)));
+  const books = await fetchBooksBySearch(query, 20);
+  if (books.length === 0) {
+    searchBooksContainer.textContent = 'No results found.';
+  } else {
+    books.forEach(b => searchBooksContainer.appendChild(createBookCard(b)));
+  }
 }
 
 let debounceTimeout;
